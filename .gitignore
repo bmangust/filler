@@ -1,0 +1,10 @@
+.vscode/
+cmake-build-debug/
+obj/
+printf/obj/
+*.[oa]
+*.out
+akraig.filler
+filler.trace
+filler.en.pdf
+libftprintf.a
