@@ -6,7 +6,7 @@
 #    By: akraig <akraig@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/09/17 12:00:21 by akraig            #+#    #+#              #
-#    Updated: 2020/01/23 12:27:16 by akraig           ###   ########.fr        #
+#    Updated: 2020/02/20 20:58:59 by akraig           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -14,11 +14,11 @@
 
 NAME = libftprintf.a
 
-SRC_DIR = ./printf/src
+SRC_DIR = ./src
 
-OBJ_DIR = ./printf/obj
+OBJ_DIR = ./obj
 
-INC_DIR = ./printf/inc
+INC_DIR = ./inc
 
 FLAGS = -Wall -Werror -Wextra
 
@@ -37,8 +37,8 @@ ft_wrdcnt.c ft_lstrev.c ft_printf.c ft_int_length_base.c ft_dtoa.c ft_ltoa.c \
 ft_print_char.c ft_print_float.c ft_print_str.c ft_strrev.c ft_strtolower.c \
 ft_strtoupper.c ft_colors.c ft_read_params.c ft_mng_params.c ft_print_arg.c \
 ft_print_int_0.c ft_print_int_1.c ft_print_oct_hex.c ft_print_float_spec.c \
-ft_mng_float.c ft_print_float_determ.c ft_print_float_concat.c \
-get_next_line_lists.c
+ft_mng_float.c ft_print_float_determ.c ft_print_float_concat.c ft_max.c \
+get_next_line.c
 
 OBJ = $(SRC:.c=.o)
 

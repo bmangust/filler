@@ -29,6 +29,8 @@ char	*print_float_internal(t_parse *p, t_double *num)
 		integer = float_e(integer, p->prec, p, 0);
 	else if (p->type == 'g' || p->type == 'G')
 		integer = float_g(integer, fract, p, len_int);
+	if (ft_strchr("FEG", p->type))
+		integer = ft_strtoupper(integer, 1);
 	return (integer);
 }
 
@@ -38,7 +40,7 @@ char	*print_float(double d, t_parse *p)
 	char		*integer;
 
 	num = new_double(d);
-	if (num->special && (p->type == 'F' || p->type == 'G' || p->type == 'E'))
+	if (num->special && ft_strchr("FEG", p->type))
 		integer = ft_strtoupper(num->special, 1);
 	else if (num->special)
 		integer = ft_strdup(num->special);
@@ -58,4 +60,32 @@ char	*print_float(double d, t_parse *p)
 			integer = add_symbols(integer, ' ', 1, 0) : 0;
 	free_double(num);
 	return (integer);
+}
+
+void	ft_cut_zero_fract(char *fract)
+{
+	int	len;
+
+	if (!fract)
+		return ;
+	len = ft_strlen(fract);
+	while (fract[--len] == '0')
+		;
+	fract[len + 1] = '\0';
+	if (fract[len] == '.')
+		fract[len] = '\0';
+}
+
+int		ft_is_same_chr(char *str, int c)
+{
+	size_t i;
+
+	if (!str)
+		return (-1);
+	i = 0;
+	while (str[i] == c)
+		i++;
+	if (i == ft_strlen(str) && i != 0)
+		return (1);
+	return (0);
 }

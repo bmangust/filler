@@ -9,8 +9,6 @@ include_directories(printf/inc)
 add_executable(filler
         inc/array_list.h
         inc/filler.h
-        inc/ft_printf.h
-        inc/libft.h
         printf/inc/ft_printf.h
         printf/inc/libft.h
         printf/src/ft_abs.c
@@ -35,6 +33,7 @@ add_executable(filler
         printf/src/ft_lstnew.c
         printf/src/ft_lstrev.c
         printf/src/ft_ltoa.c
+        printf/src/ft_max.c
         printf/src/ft_memalloc.c
         printf/src/ft_memccpy.c
         printf/src/ft_memchr.c
@@ -100,9 +99,11 @@ add_executable(filler
         printf/src/ft_toupper.c
         printf/src/ft_wordlen.c
         printf/src/ft_wrdcnt.c
-        printf/src/get_next_line_lists.c
+        printf/src/get_next_line.c
         src/array_list.c
+        src/dots.c
         src/error.c
         src/main.c
         src/map.c
-        src/piece.c src/moves.c src/dots.c)
+        src/moves.c
+        src/piece.c printf/src/get_next_line.c)

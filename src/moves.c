@@ -24,14 +24,14 @@ void	process_map(t_map *map, t_piece *p)
 **	return position to place the piece
 */
 
-void	find_position(t_map *map, t_piece *p)
-{
-	int		i[2];
-	t_dot	*dot;
-
-	dot = map->dots;
-
-}
+//void	find_position(t_map *map, t_piece *p)
+//{
+//	int		i[2];
+//	t_dot	*dot;
+//
+//	dot = map->dots;
+//
+//}
 
 void	next_move(t_map *map)
 {
