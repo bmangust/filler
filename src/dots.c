@@ -101,6 +101,9 @@ void	get_free_space(t_map *map, int i, int j, t_piece *p)
 	j = dot->j;
 	while (++j < map->height && (j - dot->j) < p->height)
 		dot->free_b = map->map[j][i] == '.' ? 1 : 0;
+	//check here to able to place piece
+	//maybe sum of 2 oppposite directions must be at least equal to size - 1 of p in that direction
+	//and also adjacent directions must fit p
 	if (isNew && (dot->free_l + dot->free_b + dot->free_r + dot->free_t) != 0)
 		add_last_dot(&map->dots, dot);
 	else if (isNew)

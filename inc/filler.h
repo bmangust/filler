@@ -45,6 +45,7 @@ typedef struct		s_piece
 int					set_errno(int val);
 t_dot				*init_dot(int i, int j);
 t_dot				*add_last_dot(t_dot **head, t_dot *new);
+void				delete_dot(t_dot *dot);
 void				clear_dots(t_dot **head);
 void				get_free_space(t_map *map, int i, int j, t_piece *p);
 t_map 				*init_map(void);
@@ -52,6 +53,7 @@ int					get_player(t_map *map);
 int					get_map(t_map *map);
 void				free_map(t_map *map);
 t_piece				*init_piece();
+void				delete_piece(t_piece *p);
 int					get_piece(t_piece *p);
 void				get_pieces_params(t_piece *p);
 void				next_move(t_map *map);

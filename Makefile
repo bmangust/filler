@@ -6,7 +6,7 @@
 #    By: akraig <akraig@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/09/17 12:00:21 by akraig            #+#    #+#              #
-#    Updated: 2020/02/23 12:38:23 by akraig           ###   ########.fr        #
+#    Updated: 2020/02/23 12:46:12 by akraig           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -79,9 +79,8 @@ fclean: clean
 re: fclean all
 
 game:
-	resources/filler_vm -f resources/maps/map02 -p1 resources/players/$(p1).filler -p2 resources/players/$(p2).filleri
+	resources/filler_vm -f resources/maps/map00 -p1 resources/players/$(p1).filler -p2 resources/players/$(p2).filler
 
 champ:
-	resources/filler_vm -t 1 -f resources/maps/map02 -p1 resources/players/$(p1).filler -p2 resources/players/$(p2).filleri
-
+	resources/filler_vm -t 1 -f resources/maps/map02 -p1 resources/players/$(p1).filler -p2 resources/players/$(p2).filler
 

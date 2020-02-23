@@ -68,3 +68,15 @@ void	get_pieces_params(t_piece *p)
 	while (--i >= 0 && ft_strchrn(p->map[i], '*') == -1)
 		p->m_bottom++;
 }
+
+void	delete_piece(t_piece *p)
+{
+	int i;
+
+	if (!p)
+		return ;
+	i = -1;
+	while (p->map && ++i)
+		free(p->map[i]);
+	free(p);
+}
