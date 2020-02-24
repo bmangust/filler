@@ -8,6 +8,11 @@ int		main(void)
 	get_player(map);
 	if (errno == 0)
 		get_map(map);
+	if (errno != 0)
+	{
+		free_map(map);
+		return (0);
+	}
 	while (42)
 	{
 		next_move(map);

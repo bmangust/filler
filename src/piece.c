@@ -11,8 +11,6 @@ t_piece	*init_piece()
 	new->m_bottom = 0;
 	new->m_left = 0;
 	new->m_right = 0;
-	new->pos = 0;
-	new->pos_bottom = 0;
 	new->map = NULL;
 	get_piece(new);
 	get_pieces_params(new);
@@ -69,14 +67,15 @@ void	get_pieces_params(t_piece *p)
 		p->m_bottom++;
 }
 
-void	delete_piece(t_piece *p)
+void	delete_piece(t_piece **p)
 {
 	int i;
 
-	if (!p)
+	if (!p || !*p)
 		return ;
 	i = -1;
-	while (p->map && ++i)
-		free(p->map[i]);
-	free(p);
+	while ((*p)->map && ++i)
+		free((*p)->map[i]);
+	free(*p);
+	*p = NULL;
 }

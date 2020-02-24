@@ -106,4 +106,5 @@ add_executable(filler
         src/main.c
         src/map.c
         src/moves.c
-        src/piece.c printf/src/get_next_line.c)
+        src/piece.c
+        src/heatmap.c)

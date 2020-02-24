@@ -1,23 +1,61 @@
 #include "filler.h"
 
+/*
+**	get all possible positions to place a piece near selected dot
+*/
+
+void	get_candidates(t_map *map, t_piece *p, t_dot *best)
+{
+	t_dot	*coord;
+	int		index[2];
+
+	index[1] = best->j - p->height + 1;			//p->height + 1;
+	while (index[1] <= best->j)					//is able to move down
+	{
+		index[0] = best->i - p->width + 1;		//p->width + 1;
+		while (index[0] <= best->i)				//is able to move right
+		{
+			coord = init_dot(index[0], index[1]);
+			if (is_placeable(coord, map, p) &&
+				!find_dot(map->placeable, coord))
+//				map->candidates[index[1]][index[0]]->is_placeable = 1;
+				add_last_dot(&map->placeable, coord);
+			else
+				delete_dot(coord);
+			index[0]++;							//try to move right
+		}
+		index[1]++;								//try to move down
+	}
+}
+
+/*
+**	searches map for player symbol (O or X)
+**	and askes for all points, where we can add figure
+*/
+
 void	process_map(t_map *map, t_piece *p)
 {
-	int		i;
-	int		j;
+	int		index[2];
 	int		bias;
+	t_dot	*dot;
 
-	j = -1;
-	bias = 0;
-	while (++j < map->height)
+	index[1] = -1;
+	while (++index[1] < map->height)
 	{
-		if (ft_strchrn(map->map[j], map->c) == -1)
+		bias = 0;
+		if (ft_strchrn(map->map[index[1]], map->c) == -1)
 			continue;
-		while ((i = ft_strchrn(map->map[j] + bias, map->c)) != -1)
+		while ((index[0] = ft_strchrn(map->map[index[1]] + bias, map->c)) != -1)
 		{
-			get_free_space(map, i + bias, j, p);
-			bias = bias + i + 1;
+			dot = init_dot(index[0] + bias, index[1]);
+			get_candidates(map, p, dot);
+			free(dot);
+			bias = bias + index[0] + 1;
 		}
 	}
+	dot = choose_candidate(map->placeable, map);
+	printf("%d %d\n", dot->j, dot->i);
+	clear_dots(&(map->placeable));
 }
 
 int		ft_sqrt(int a)
@@ -36,31 +74,32 @@ int		ft_sqrt(int a)
 
 int		is_closer_to_ceneter(t_dot dot, t_dot best, t_map map)
 {
-	int d[2];
-
-	d[0] = ft_sqrt(ft_pow((map.width - dot.i), 2) +
-			ft_pow((map.height - dot.j), 2));
-	d[1] = ft_sqrt(ft_pow((map.width - best.i), 2) +
-			ft_pow((map.height - best.j), 2));
+	int64_t d[2];
+	d[0] = ft_absint(map.width / 2 - dot.i) +
+			ft_absint(map.height / 2 - dot.j);
+	d[1] = ft_absint(map.width / 2 - best.i) +
+		   ft_absint(map.height / 2 - best.j);
+//	d[0] = ft_sqrt(ft_pow((map.width / 2 - dot.i), 2) +
+//			ft_pow((map.height / 2 - dot.j), 2));
+//	d[1] = ft_sqrt(ft_pow((map.width / 2 - best.i), 2) +
+//			ft_pow((map.height / 2 - best.j), 2));
 	return d[0] < d[1] ? 1 : 0;
 }
 
-t_dot	*choose_candidate(t_map *map)
+/*
+**	chooses closest to center candidate
+*/
+
+t_dot	*choose_candidate(t_dot *dots, t_map *map)
 {
 	t_dot	*dot;
 	t_dot	*best;
 
-	dot = map->dots;
+	dot = dots;
 	best = dot;
-	while (dot)
-	{
+	while ((dot = dot->next) != NULL)
 		if (is_closer_to_ceneter(*dot, *best, *map))
-		{
 			best = dot;
-			ft_printf("found better dot: (%d %d)\n", best->i, best->j);
-		}
-		dot = dot->next;
-	}
 	return (best);
 }
 
@@ -91,40 +130,13 @@ int		is_placeable(t_dot *coord, t_map *map, t_piece *p)
 	return (was_intersection ? 1 : 0);
 }
 
-/*
-**	return position to place the piece
-*/
-
-t_dot	*find_position(t_map *map, t_piece *p)
-{
-	t_dot	*best;
-	t_dot	*coord;
-
-	best = choose_candidate(map);
-	coord = init_dot(best->i - p->width + 1, best->j - p->height + 1);
-	while (coord->j <= best->j)				//is able to move down
-	{
-		while (coord->i <= best->i)			//is able to move right
-		{
-			if (is_placeable(coord, map, p))
-				return (coord);
-			coord->i += 1;						//try to move right
-		}
-		coord->j += 1;							//try to move down
-	}
-	//try to find another dot (or not?)
-	return (NULL);
-}
 
 void	next_move(t_map *map)
 {
 	t_piece	*p;
-	t_dot	*coord;
 
 	p = init_piece();
 	process_map(map, p);
-	coord = find_position(map, p);
-	ft_printf("%d %d\n", coord->j, coord->i);
-	delete_piece(p);
-	delete_dot(coord);
+//	find_position(map, p);
+	delete_piece(&p);
 }

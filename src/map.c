@@ -9,7 +9,10 @@ t_map 	*init_map(void)
 	map->width = 0;
 	map->c = 0;
 	map->map = NULL;
+	map->heatmap = NULL;
 	map->dots = NULL;
+	map->placeable = NULL;
+	map->candidates = NULL;
 	return (map);
 }
 
@@ -20,7 +23,11 @@ int		get_player(t_map *map)
 	if (get_next_line(0, &line) == ERROR)
 		return set_errno(EIO);
 	if (map && ft_strnstr(line, "$$$", 3))
+	{
 		map->c = ft_strstr(line, "p1") ? 'O' : 'X';
+		map->enemy = map->c == 'O' ? 'X' : 'O';
+		map->enemynew = map->c == 'O' ? 'x' : 'o';
+	}
 	else
 		return set_errno(EINVAL);
 	return (0);
@@ -61,11 +68,12 @@ void	clear_map(t_map *map)
 }
 
 
-void	free_map(t_map *map)
+void	free_map(t_map **map)
 {
-	if (!map)
+	if (!map || !*map)
 		return;
-	clear_map(map);
-	clear_dots(&map->dots);
-	free(map);
+	clear_map(*map);
+	clear_dots(&((*map)->dots));
+	free(*map);
+	*map = NULL;
 }

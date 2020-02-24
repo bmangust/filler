@@ -35,6 +35,7 @@ INCLUDES = -I$(INC_DIR) -I$(LIB_INC_DIR)
 SRC =	array_list.c \
 		dots.c \
 		error.c \
+		heatmap.c \
 		main.c \
 		map.c \
 		moves.c \
