@@ -45,7 +45,7 @@ typedef struct		s_map
 	int				height;
 	char			**map;
 	int 			**heatmap;
-	t_dot			*dots;
+	t_dot			*enemies;
 	t_dot			*placeable;
 	t_dot			***candidates;
 }					t_map;

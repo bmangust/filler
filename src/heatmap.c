@@ -21,6 +21,11 @@ int		get_distance(t_dot *enemy, t_dot *cur)
 	return (diff[2]);
 }
 
+//переделать, неразумно малочить каждый ход
+//лучше один раз выделить, потом просто персчитывать
+//вынести поиск врагов в отдельную функцию
+//(или забить, хз как скажется на производительности)
+
 void	get_heatmap(t_map *map)
 {
 	int	i[2];
@@ -32,7 +37,17 @@ void	get_heatmap(t_map *map)
 		map->heatmap[i[1]] = (int*)malloc(sizeof(int) * map->width);
 		i[0] = -1;
 		while (++i[0] < map->width)
-			map->heatmap[i[1]][i[0]] = INT16_MAX;
+		{
+			if (map->map[i[1]][i[0]] == '.')
+				map->heatmap[i[1]][i[0]] = INT16_MAX;
+			else if (map->map[i[1]][i[0]] == map->c)
+				map->heatmap[i[1]][i[0]] = INT32_MAX;
+			else
+			{
+				map->heatmap[i[1]][i[0]] = 0;
+				add_last_dot(&(map->enemies), init_dot(i[0], i[1]));
+			}
+		}
 	}
 }
 
@@ -57,15 +72,6 @@ void	find_enemy(t_map *map, t_dot *enemy, int i, int j)
 	}
 	enemy->i = i;
 	enemy->j = j;
-}
-
-void 	update_neighbours(int **heatmap, t_dot *cur)
-{
-	int i[2];
-
-	i[0] = cur->i - 1;
-	i[1] = cur->j;
-
 }
 
 void	fill_heatmap(t_map *map)

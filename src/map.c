@@ -10,7 +10,7 @@ t_map 	*init_map(void)
 	map->c = 0;
 	map->map = NULL;
 	map->heatmap = NULL;
-	map->dots = NULL;
+	map->enemies = NULL;
 	map->placeable = NULL;
 	map->candidates = NULL;
 	return (map);
@@ -73,7 +73,7 @@ void	free_map(t_map **map)
 	if (!map || !*map)
 		return;
 	clear_map(*map);
-	clear_dots(&((*map)->dots));
+	clear_dots(&((*map)->enemies));
 	free(*map);
 	*map = NULL;
 }

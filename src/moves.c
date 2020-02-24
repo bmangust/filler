@@ -79,10 +79,6 @@ int		is_closer_to_ceneter(t_dot dot, t_dot best, t_map map)
 			ft_absint(map.height / 2 - dot.j);
 	d[1] = ft_absint(map.width / 2 - best.i) +
 		   ft_absint(map.height / 2 - best.j);
-//	d[0] = ft_sqrt(ft_pow((map.width / 2 - dot.i), 2) +
-//			ft_pow((map.height / 2 - dot.j), 2));
-//	d[1] = ft_sqrt(ft_pow((map.width / 2 - best.i), 2) +
-//			ft_pow((map.height / 2 - best.j), 2));
 	return d[0] < d[1] ? 1 : 0;
 }
 

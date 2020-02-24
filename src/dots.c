@@ -136,30 +136,30 @@ int		is_connectable(t_dot *dot, t_piece *p)
 **
 */
 
-void	get_free_space(t_map *map, int i, int j, t_piece *p)
-{
-	t_dot	*dot;
-	int		is_new;
-
-	is_new = 0;
-	if ((dot = check_dots(map->dots, i, j)) == NULL)
-	{
-		is_new = 1;
-		dot = init_dot(i, j);
-	}
-	while (--i >= 0 && (dot->i - i) < p->width)
-		dot->free_l += map->map[j][i] == '.' ? 1 : 0;
-	i = dot->i;
-	while (++i < map->width && (i - dot->i) < p->width)
-		dot->free_r += map->map[j][i] == '.' ? 1 : 0;
-	i = dot->i;
-	while (--j >= 0 && (dot->j - j) < p->height)
-		dot->free_t += map->map[j][i] == '.' ? 1 : 0;
-	j = dot->j;
-	while (++j < map->height && (j - dot->j) < p->height)
-		dot->free_b += map->map[j][i] == '.' ? 1 : 0;
-	if (is_new && is_connectable(dot, p))
-		add_last_dot(&map->dots, dot);
-	else if (!is_connectable(dot, p))
-		delete_dot(dot);
-}
+//void	get_free_space(t_map *map, int i, int j, t_piece *p)
+//{
+//	t_dot	*dot;
+//	int		is_new;
+//
+//	is_new = 0;
+//	if ((dot = check_dots(map->dots, i, j)) == NULL)
+//	{
+//		is_new = 1;
+//		dot = init_dot(i, j);
+//	}
+//	while (--i >= 0 && (dot->i - i) < p->width)
+//		dot->free_l += map->map[j][i] == '.' ? 1 : 0;
+//	i = dot->i;
+//	while (++i < map->width && (i - dot->i) < p->width)
+//		dot->free_r += map->map[j][i] == '.' ? 1 : 0;
+//	i = dot->i;
+//	while (--j >= 0 && (dot->j - j) < p->height)
+//		dot->free_t += map->map[j][i] == '.' ? 1 : 0;
+//	j = dot->j;
+//	while (++j < map->height && (j - dot->j) < p->height)
+//		dot->free_b += map->map[j][i] == '.' ? 1 : 0;
+//	if (is_new && is_connectable(dot, p))
+//		add_last_dot(&map->dots, dot);
+//	else if (!is_connectable(dot, p))
+//		delete_dot(dot);
+//}
