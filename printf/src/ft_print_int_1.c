@@ -12,13 +12,6 @@
 
 #include "ft_printf.h"
 
-int64_t ft_max(int64_t a, int64_t b)
-{
-	if (a > b)
-		return (a);
-	return (b);
-}
-
 void	print_s_int(int64_t n, t_parse *p)
 {
 	char	*num;
