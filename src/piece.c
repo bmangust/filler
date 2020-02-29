@@ -35,6 +35,7 @@ int		get_piece(t_piece *p)
 		p->map[lines] = line;
 	}
 	p->map[lines] = NULL;
+	write(2, "got piece\n", 10);
 	return (0);
 }
 

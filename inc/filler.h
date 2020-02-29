@@ -10,6 +10,8 @@ typedef struct		s_dot
 {
 	int				i;
 	int				j;
+	int				heat_max;
+	int				heat;
 	int				is_placeable;
 	int				free_t;
 	int				free_b;
@@ -69,9 +71,16 @@ void				get_pieces_params(t_piece *p);
 void				next_move(t_map *map);
 void				process_map(t_map *map, t_piece *p);
 void				get_candidates(t_map *map, t_piece *p, t_dot *best);
-t_dot				*choose_candidate(t_dot *dots, t_map *map);
+t_dot				*choose_candidate(t_dot *dots, t_map *map, int comp(t_dot, t_dot, t_map));
 int					is_placeable(t_dot *coord, t_map *map, t_piece *p);
 t_dot				*find_dot(t_dot *head, t_dot *dot);
 void				get_array_of_candidates(t_map *map);
+void				calculate_heatmap(t_map *map);
+void				get_heatmap(t_map *map);
+void				map_a_map(t_map *map, void f(t_map*, t_dot*));
+void				reset_heatmap(t_map *map, t_dot *cur);
 
+
+void				map_dots(t_dot *dot, void f(t_dot d));
+void				print_dot_heat(t_dot d);
 #endif

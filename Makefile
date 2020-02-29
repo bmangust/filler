@@ -56,6 +56,8 @@ $(NAME): $(OBJ_DIR) $(OBJS) $(NAMEDIR)
 	@echo "compiling filler"
 	@gcc -o $(PLAYERDIR)/$(NAME) $(OBJS) $(INCLUDES) $(LIBRARIES)
 	@echo "We're ready to work"
+	@echo "make p1=akraig p2=carli m=0 game to start a game om a small map"
+	@echo "change m from 0 to 2 to vary map size"
 
 $(OBJ_DIR):
 	mkdir -p $(OBJ_DIR)
@@ -80,7 +82,7 @@ fclean: clean
 re: fclean all
 
 game:
-	resources/filler_vm -f resources/maps/map00 -p1 resources/players/$(p1).filler -p2 resources/players/$(p2).filler
+	resources/filler_vm -f resources/maps/map0$(m) -p1 resources/players/$(p1).filler -p2 resources/players/$(p2).filler
 
 champ:
 	resources/filler_vm -t 1 -f resources/maps/map02 -p1 resources/players/$(p1).filler -p2 resources/players/$(p2).filler

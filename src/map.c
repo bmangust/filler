@@ -18,11 +18,16 @@ t_map 	*init_map(void)
 
 int		get_player(t_map *map)
 {
-	char *line;
+	char	*line;
+	int		ret;
 
-	if (get_next_line(0, &line) == ERROR)
-		return set_errno(EIO);
-	if (map && ft_strnstr(line, "$$$", 3))
+//	if (get_next_line(0, &line) == ERROR)
+//		return set_errno(EIO);
+	while ((ret = get_next_line(0, &line)) && !ft_strstr(line, "akraig"))
+		free(line);
+		if (ret == ERROR)
+			return set_errno(EIO);
+	if (map && ft_strstr(line, "akraig"))
 	{
 		map->c = ft_strstr(line, "p1") ? 'O' : 'X';
 		map->enemy = map->c == 'O' ? 'X' : 'O';
@@ -38,7 +43,8 @@ int		get_map(t_map *map)
 	char	*line;
 	int		lines;
 
-	get_next_line(0, &line);
+	while (get_next_line(0, &line) && !ft_strstr(line, "Plateau"))
+		free(line);
 	map->width = map->width ? map->width : ft_atoi(ft_strrchr(line, ' '));
 	map->height = map->height ? map->height : ft_atoi(ft_strchr(line, ' '));
 	free(line);

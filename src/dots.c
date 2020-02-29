@@ -24,6 +24,8 @@ t_dot	*init_dot(int i, int j)
 	dot = (t_dot*)malloc(sizeof(t_dot));
 	dot->i = i;
 	dot->j = j;
+	dot->heat_max = 0;
+	dot->heat = 0;
 	dot->is_placeable = 0;
 	dot->free_t = 0;
 	dot->free_b = 0;
@@ -123,6 +125,24 @@ int		is_connectable(t_dot *dot, t_piece *p)
 		(dot->free_b + dot->free_t >= p->height - 1))
 		return (1);
 	return (0);
+}
+
+void	print_dot_heat(t_dot d)
+{
+	ft_printf("%5d ", d.heat - INT16_MAX);
+}
+
+void	map_dots(t_dot *dot, void f(t_dot))
+{
+	t_dot *tmp;
+
+	tmp = dot;
+	while (tmp)
+	{
+		f(*tmp);
+		tmp = tmp->next;
+	}
+	ft_printf("\n");
 }
 
 /*

@@ -1,5 +1,20 @@
 #include "filler.h"
 
+int		get_heat(t_map *map, t_piece *p, t_dot dot)
+{
+	t_dot	*pcur;
+
+	pcur = init_dot(-1, -1);
+	while (++pcur->j < p->height)
+	{
+		pcur->i = -1;
+		while (++pcur->i < p->width)
+			if (p->map[pcur->j][pcur->i] == '*')
+				dot.heat += map->heatmap[dot.j + pcur->j][dot.i + pcur->i];
+	}
+	return (dot.heat);
+}
+
 /*
 **	get all possible positions to place a piece near selected dot
 */
@@ -19,7 +34,10 @@ void	get_candidates(t_map *map, t_piece *p, t_dot *best)
 			if (is_placeable(coord, map, p) &&
 				!find_dot(map->placeable, coord))
 //				map->candidates[index[1]][index[0]]->is_placeable = 1;
+			{
+				coord->heat = get_heat(map, p, *coord);
 				add_last_dot(&map->placeable, coord);
+			}
 			else
 				delete_dot(coord);
 			index[0]++;							//try to move right
@@ -53,9 +71,6 @@ void	process_map(t_map *map, t_piece *p)
 			bias = bias + index[0] + 1;
 		}
 	}
-	dot = choose_candidate(map->placeable, map);
-	printf("%d %d\n", dot->j, dot->i);
-	clear_dots(&(map->placeable));
 }
 
 int		ft_sqrt(int a)
@@ -82,20 +97,44 @@ int		is_closer_to_ceneter(t_dot dot, t_dot best, t_map map)
 	return d[0] < d[1] ? 1 : 0;
 }
 
+int		is_lower_heat(t_dot dot, t_dot best, t_map map)
+{
+	(void) map;
+	if (dot.heat < best.heat)
+		return (1);
+	return (0);
+}
+
+//t_dot	*choose_min_sum_candidate(t_dot *dots, t_map *map, t_piece *p)
+//{
+//	t_dot	*dot;
+//	t_dot	*best;
+//
+//	dot = dots;
+//	best = dot;
+//	while ((dot = dot->next) != NULL)
+//		if (dot->heat > best->heat)
+//			best = dot;
+//	return (best);
+//}
+
 /*
-**	chooses closest to center candidate
+**	chooses best candidate based of compare function f
 */
 
-t_dot	*choose_candidate(t_dot *dots, t_map *map)
+t_dot	*choose_candidate(t_dot *dots, t_map *map, int comp(t_dot, t_dot, t_map))
 {
 	t_dot	*dot;
 	t_dot	*best;
 
 	dot = dots;
 	best = dot;
+	if (!dot)
+		return (NULL);
 	while ((dot = dot->next) != NULL)
-		if (is_closer_to_ceneter(*dot, *best, *map))
+		if (comp(*dot, *best, *map))
 			best = dot;
+
 	return (best);
 }
 
@@ -130,9 +169,16 @@ int		is_placeable(t_dot *coord, t_map *map, t_piece *p)
 void	next_move(t_map *map)
 {
 	t_piece	*p;
+	t_dot	*dot;
 
 	p = init_piece();
+	calculate_heatmap(map);
 	process_map(map, p);
-//	find_position(map, p);
+//	map_dots(map->placeable, &print_dot_heat);
+	dot = choose_candidate(map->placeable, map, &is_lower_heat);
+//	dot = choose_min_sum_candidate(map->placeable, map, p);
+	printf("%d %d\n", dot->j, dot->i);
+	map_a_map(map, &reset_heatmap);
+	clear_dots(&(map->placeable));
 	delete_piece(&p);
 }
