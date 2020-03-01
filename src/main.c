@@ -7,20 +7,20 @@ int		main(void)
 
 	map = init_map();
 	get_player(map);
-	if (errno == 0)
-		get_map(map);
+//	if (map->c == 'O')
+//		write(2, "\nI am O\n", 8);
+//	else
+//		write(2, "\nI am X\n", 8);
 	if (errno != 0)
 	{
 		free_map(&map);
 		return (0);
 	}
-	while (++i < 100)
+	while (get_map(map) != ERROR && ++i < 100)
 	{
-		next_move(map);
-		get_map(map);
+		if (next_move(map) == NO_CANDIDATES)
+			break;
 	}
 	free_map(&map);
-
-
 	return 0;
 }

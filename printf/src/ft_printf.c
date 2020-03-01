@@ -12,13 +12,11 @@
 
 #include "ft_printf.h"
 
-int	ft_printf(const char *restrict s, ...)
+int ft_printf_main(int fd, const char *restrict s, va_list valist)
 {
-	va_list	valist;
 	t_parse	*p;
 	int		printed;
 
-	va_start(valist, s);
 	p = new_param();
 	while (*s)
 	{
@@ -36,7 +34,28 @@ int	ft_printf(const char *restrict s, ...)
 		}
 		s++;
 	}
-	ft_putstr(p->buf);
+	ft_putstr_fd(p->buf, fd);
 	printed = del_param(p, valist);
+	return (printed);
+
+}
+
+int ft_fprintf(int fd, const char *restrict s, ...)
+{
+	va_list	valist;
+	int		printed;
+
+	va_start(valist, s);
+	printed = ft_printf_main(fd, s, valist);
+	return (printed);
+}
+
+int	ft_printf(const char *restrict s, ...)
+{
+	va_list	valist;
+	int		printed;
+
+	va_start(valist, s);
+	printed = ft_printf_main(1, s, valist);
 	return (printed);
 }

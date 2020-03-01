@@ -8,6 +8,8 @@ t_map 	*init_map(void)
 	map->height = 0;
 	map->width = 0;
 	map->c = 0;
+	map->placeable_candidates = 0;
+	map->new_enemies = 0;
 	map->map = NULL;
 	map->heatmap = NULL;
 	map->enemies = NULL;
@@ -23,10 +25,12 @@ int		get_player(t_map *map)
 
 //	if (get_next_line(0, &line) == ERROR)
 //		return set_errno(EIO);
-	while ((ret = get_next_line(0, &line)) && !ft_strstr(line, "akraig"))
+	while ((ret = get_next_line(0, &line)) > 0 &&
+			!(ft_strstr(line, "$$$") &&
+			ft_strstr(line, "akraig")))
 		free(line);
-		if (ret == ERROR)
-			return set_errno(EIO);
+	if (ret == ERROR)
+		return set_errno(EIO);
 	if (map && ft_strstr(line, "akraig"))
 	{
 		map->c = ft_strstr(line, "p1") ? 'O' : 'X';
@@ -35,7 +39,7 @@ int		get_player(t_map *map)
 	}
 	else
 		return set_errno(EINVAL);
-	return (0);
+	return (OK);
 }
 
 int		get_map(t_map *map)
@@ -59,7 +63,8 @@ int		get_map(t_map *map)
 		map->map[lines] = line + 4;
 	}
 	map->map[lines] = NULL;
-	return (0);
+	map_a_map(map, &replace_lowercase_c);
+	return (OK);
 }
 
 void	clear_map(t_map *map)
@@ -71,6 +76,7 @@ void	clear_map(t_map *map)
 	i = -1;
 	while (++i < map->height)
 		free(map->map[i]);
+	map->map = NULL;
 }
 
 

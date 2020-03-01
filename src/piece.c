@@ -22,7 +22,8 @@ int		get_piece(t_piece *p)
 	char	*line;
 	int		lines;
 
-	get_next_line(0, &line);
+	while (get_next_line(0, &line) && !ft_strstr(line, "Piece"))
+		free(line);
 	p->width = p->width ? p->width : ft_atoi(ft_strrchr(line, ' '));
 	p->height = p->height ? p->height : ft_atoi(ft_strchr(line, ' '));
 	free(line);
@@ -35,7 +36,6 @@ int		get_piece(t_piece *p)
 		p->map[lines] = line;
 	}
 	p->map[lines] = NULL;
-	write(2, "got piece\n", 10);
 	return (0);
 }
 

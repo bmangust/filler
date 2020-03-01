@@ -12,21 +12,21 @@ void	get_array_of_candidates(t_map *map)
 		map->candidates[i[1]] = (t_dot**)malloc(sizeof(t_dot*) * map->width);
 		while (++i[0] < map->width)
 		{
-			map->candidates[i[1]][i[0]] = init_dot(i[0], i[1]);
+			map->candidates[i[1]][i[0]] = init_dot(i[0], i[1], 0);
 		}
 	}
 }
 
-t_dot	*init_dot(int i, int j)
+t_dot	*init_dot(int i, int j, int letter)
 {
 	t_dot *dot;
 
 	dot = (t_dot*)malloc(sizeof(t_dot));
 	dot->i = i;
 	dot->j = j;
+	dot->c = letter;
 	dot->heat_max = 0;
 	dot->heat = 0;
-	dot->is_placeable = 0;
 	dot->free_t = 0;
 	dot->free_b = 0;
 	dot->free_r = 0;
@@ -84,6 +84,8 @@ t_dot	*find_dot(t_dot *head, t_dot *dot)
 {
 	t_dot *tmp;
 
+	if (!head || !dot)
+		return (NULL);
 	tmp = head;
 	while (tmp)
 	{
@@ -91,6 +93,15 @@ t_dot	*find_dot(t_dot *head, t_dot *dot)
 			return (tmp);
 		tmp = tmp->next;
 	}
+	return (NULL);
+}
+
+t_dot	*compare_dots(t_dot *cur, t_dot *dot)
+{
+	if (!cur || !dot)
+		return (NULL);
+	if (cur->i == dot->i && cur->j == dot->j)
+		return (dot);
 	return (NULL);
 }
 
@@ -129,7 +140,7 @@ int		is_connectable(t_dot *dot, t_piece *p)
 
 void	print_dot_heat(t_dot d)
 {
-	ft_printf("%5d ", d.heat - INT16_MAX);
+	ft_fprintf(2, "%5d ", d.heat);
 }
 
 void	map_dots(t_dot *dot, void f(t_dot))
@@ -142,7 +153,7 @@ void	map_dots(t_dot *dot, void f(t_dot))
 		f(*tmp);
 		tmp = tmp->next;
 	}
-	ft_printf("\n");
+	ft_fprintf(2, "\n");
 }
 
 /*

@@ -9,6 +9,11 @@
 **	3. TODO: analyze enemy direction and try to counter his way
 **	this can be done by searching lowercase letters and
 **	select pieces closer to them
+**	4. TODO: safe play - touch edge and cut as big part as possible
+**	this should be done only if there's no threat of being trapped!
+**	if we are close to edge and can touch it this move - place a piece
+**	5. TODO: FIX FREEING NOT ALLOCATED POINTER WHEN ENEMY IS LOCKED
+**	5. TODO: filling the board when the enemy is dead
 */
 
 int		get_distance(t_dot enemy, t_dot cur)
@@ -39,8 +44,6 @@ void	get_heatmap(t_map *map)
 		{
 			if (map->map[i[1]][i[0]] == '.')
 				map->heatmap[i[1]][i[0]] = INT16_MAX;
-//			else if (map->map[i[1]][i[0]] == map->c)
-//				map->heatmap[i[1]][i[0]] = INT16_MAX;
 		}
 	}
 }
@@ -53,19 +56,30 @@ int		is_enemy(t_map *map, t_dot *dot)
 	return (0);
 }
 
+int		is_new_enemy(t_map *map, t_dot *dot)
+{
+	if (map->map[dot->j][dot->i] == map->enemynew)
+		return (1);
+	return (0);
+}
+
 void	set_dot(t_dot *target, t_dot source)
 {
 	target->i = source.i;
 	target->j = source.j;
 }
 
-t_dot	*get_next_enemy(t_map *map, t_dot *enemy)
+t_dot	*get_next_enemy(t_map *map, t_dot *enemy, int only_new)
 {
 	t_dot	*tmp;
+//	(void)	only_new;
 
 	if (!map || !map->enemies)
 		return (NULL);
 	tmp = enemy ? enemy->next : map->enemies;
+	if (only_new)
+		while (tmp && tmp->c != map->enemynew)
+			tmp = tmp->next;
 	return (tmp);
 }
 
@@ -99,34 +113,80 @@ void	reset_heatmap(t_map *map, t_dot *cur)
 **	updates enemies list, adds all enemy dots to a list
 */
 
-//void	update_enemies(t_map *map)
-//{
-//	t_dot	*cur;
-//
-//	cur = init_dot(-1, -1);
-//	if (!map || !map->map)
-//		return ;
-//	while (++cur->j < map->height)
-//	{
-//		cur->i = -1;
-//		while (++cur->i < map->width)
-//			if (is_enemy(map, cur) && !find_dot(map->enemies, cur))
-//				add_last_dot(&(map->enemies), init_dot(cur->i, cur->j));
-//	}
-//	free(cur);
-//}
-
 void	update_enemies(t_map *map, t_dot *cur)
 {
-	if (is_enemy(map, cur) && !find_dot(map->enemies, cur))
-		add_last_dot(&(map->enemies), init_dot(cur->i, cur->j));
+	int		c;
+	t_dot	*dot;
+
+	dot = NULL;
+	c = map->map[cur->j][cur->i];
+	if (is_enemy(map, cur) && !(dot = find_dot(map->enemies, cur)))
+		add_last_dot(&(map->enemies), init_dot(cur->i, cur->j, c));
+	else if (dot)
+		dot->c = c;
+}
+
+void	calculate_heat(t_map *map, t_dot *cur)
+{
+	t_dot	*enemy;
+
+	if (map->map[cur->j][cur->i] == map->c)
+	{
+		map->heatmap[cur->j][cur->i] = 0;
+		return ;
+	}
+	else if (is_enemy(map, cur))
+	{
+		map->heatmap[cur->j][cur->i] = 999;
+		return ;
+	}
+	enemy = NULL;
+	cur->heat_max = 999;
+	while ((enemy = get_next_enemy(map, enemy, 0)))
+	{
+		cur->heat = get_distance(*enemy, *cur);
+		cur->heat_max = cur->heat < cur->heat_max ?
+						cur->heat : cur->heat_max;
+	}
+	map->heatmap[cur->j][cur->i] = cur->heat_max;
+}
+
+void	calculate_heat_new(t_map *map, t_dot *cur)
+{
+	t_dot	*enemy;
+
+	if (map->map[cur->j][cur->i] == map->c)
+	{
+		map->heatmap[cur->j][cur->i] = 0;
+		return ;
+	}
+	else if (is_new_enemy(map, cur))
+	{
+		map->heatmap[cur->j][cur->i] = 999;
+		return ;
+	}
+	enemy = NULL;
+	cur->heat_max = 999;
+	while ((enemy = get_next_enemy(map, enemy, 1)))
+	{
+		cur->heat = get_distance(*enemy, *cur);
+		cur->heat_max = cur->heat < cur->heat_max ?
+						cur->heat : cur->heat_max;
+	}
+	map->heatmap[cur->j][cur->i] = cur->heat_max;
+}
+
+void 	replace_lowercase_c(t_map *map, t_dot *cur)
+{
+	if (map->map[cur->j][cur->i] == ft_tolower(map->c))
+		map->map[cur->j][cur->i] = map->c;
 }
 
 void	map_a_map(t_map *map, void f(t_map*, t_dot*))
 {
 	t_dot	*cur;
 
-	cur = init_dot(-1, -1);
+	cur = init_dot(-1, -1, 0);
 	if (!map || !map->map)
 		return ;
 	while (++cur->j < map->height)
@@ -143,31 +203,9 @@ void	print_array(t_map *map, t_dot *cur)
 	int **arr;
 
 	arr = map->heatmap;
-	ft_printf("%-6d", arr[cur->j][cur->i]);
+	ft_fprintf(2, "%- 5d", arr[cur->j][cur->i]);
 	if (cur->i == map->width - 1)
-		ft_printf("\n");
-}
-
-void	calculate_heat(t_map *map, t_dot *cur)
-{
-	t_dot	*enemy;
-
-	if (map->map[cur->j][cur->i] == map->c)
-		return ;
-	else if (is_enemy(map, cur))
-	{
-		map->heatmap[cur->j][cur->i] = 999;
-		return ;
-	}
-	enemy = NULL;
-	cur->heat_max = INT16_MAX;
-	while ((enemy = get_next_enemy(map, enemy)))
-	{
-		cur->heat = get_distance(*enemy, *cur);
-		cur->heat_max = cur->heat < cur->heat_max ?
-						cur->heat : cur->heat_max;
-	}
-	map->heatmap[cur->j][cur->i] = cur->heat_max;
+		ft_fprintf(2, "\n");
 }
 
 /*

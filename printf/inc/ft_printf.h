@@ -53,6 +53,7 @@ typedef struct		s_double
 }					t_double;
 
 int					ft_printf(const char *restrict s, ...);
+int					ft_fprintf(int fd, const char *restrict s, ...);
 t_parse				*parse_string(char *s, t_parse *params, va_list valist);
 void				buffer(t_parse *p, char *s, int freeable);
 void				print_char(char c, t_parse *p);
