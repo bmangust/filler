@@ -49,7 +49,8 @@ typedef struct		s_map
 	char			enemynew;
 	int				width;
 	int				height;
-	int 			new_enemies;
+	int				cnt_enemies;
+	int				is_alive;
 	int				placeable_candidates;
 	char			**map;
 	int 			**heatmap;
@@ -67,7 +68,7 @@ void				delete_dot(t_dot *dot);
 void				clear_dots(t_dot **head);
 t_dot				*compare_dots(t_dot *cur, t_dot *dot);
 void				get_free_space(t_map *map, int i, int j, t_piece *p);
-t_map 				*init_map(void);
+t_map				*init_map(void);
 int					get_player(t_map *map);
 int					get_map(t_map *map);
 void				free_map(t_map **map);
@@ -87,7 +88,9 @@ void				calculate_heatmap(t_map *map);
 void				get_heatmap(t_map *map);
 void				map_a_map(t_map *map, void f(t_map*, t_dot*));
 void				reset_heatmap(t_map *map, t_dot *cur);
-void			 	replace_lowercase_c(t_map *map, t_dot *cur);
+void				replace_lowercase_c(t_map *map, t_dot *cur);
+int					count_enemies(t_map *map);
+void				safe_play(t_map *map);
 
 
 void				map_dots(t_dot *dot, void f(t_dot d));

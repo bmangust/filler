@@ -178,6 +178,28 @@ int		next_move(t_map *map)
 	map_a_map(map, &reset_heatmap);
 	clear_dots(&(map->placeable));
 	delete_piece(&p);
-//	clear_map(map);												//catches segfault, why????!!!
+	clear_map(map);
 	return (OK);
+}
+
+void	safe_play(t_map *map)
+{
+	t_piece	*p;
+	t_dot	*dot;
+
+	ft_fprintf(2, "=============safe play=============\n");
+	p = init_piece();
+	process_map(map, p);
+	dot = choose_candidate(map->placeable, map, &is_closer_to_ceneter);
+	if (dot)
+		ft_printf("%d %d\n", dot->j, dot->i);
+	else
+	{
+		ft_fprintf(2, "no candidates\n");
+		ft_printf("%d %d\n", 0, 0);
+		delete_piece(&p);
+	}
+	clear_dots(&(map->placeable));
+	delete_piece(&p);
+	clear_map(map);
 }

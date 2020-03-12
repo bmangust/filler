@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   map.c                                              :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: akraig <marvin@42.fr>                      +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2020/03/12 19:45:48 by akraig            #+#    #+#             */
+/*   Updated: 2020/03/12 19:45:50 by akraig           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "filler.h"
 
 t_map 	*init_map(void)
@@ -9,7 +21,8 @@ t_map 	*init_map(void)
 	map->width = 0;
 	map->c = 0;
 	map->placeable_candidates = 0;
-	map->new_enemies = 0;
+	map->cnt_enemies = 0;
+	map->is_alive = 1;
 	map->map = NULL;
 	map->heatmap = NULL;
 	map->enemies = NULL;
@@ -23,8 +36,6 @@ int		get_player(t_map *map)
 	char	*line;
 	int		ret;
 
-//	if (get_next_line(0, &line) == ERROR)
-//		return set_errno(EIO);
 	while ((ret = get_next_line(0, &line)) > 0 &&
 			!(ft_strstr(line, "$$$") &&
 			ft_strstr(line, "akraig")))
@@ -60,7 +71,8 @@ int		get_map(t_map *map)
 	{
 		if (get_next_line(0, &line) == -1)
 			return set_errno(EIO);
-		map->map[lines] = line + 4;
+		map->map[lines] = ft_strdup(line + 4);
+		free(line);
 	}
 	map->map[lines] = NULL;
 	map_a_map(map, &replace_lowercase_c);

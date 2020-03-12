@@ -34,6 +34,7 @@ INCLUDES = -I$(INC_DIR) -I$(LIB_INC_DIR)
 
 SRC =	array_list.c \
 		dots.c \
+		enemy.c \
 		error.c \
 		heatmap.c \
 		main.c \
@@ -86,4 +87,7 @@ game:
 
 champ:
 	resources/filler_vm -t 1 -f resources/maps/map02 -p1 resources/players/$(p1).filler -p2 resources/players/$(p2).filler
+
+cp: all
+	cp resources/players/akraig.filler ../filler_championship/resources/players/
 

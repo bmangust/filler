@@ -107,4 +107,4 @@ add_executable(filler
         src/map.c
         src/moves.c
         src/piece.c
-        src/heatmap.c)
+        src/heatmap.c src/enemy.c)
