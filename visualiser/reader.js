@@ -3,8 +3,11 @@ const {log} = require('./utils');
 module.exports = class Reader {
 	width;
 	height;
-	readingMap;
+	state;
 	map;
+	pieceWidth;
+	pieceHeight;
+	piece;
 	history;
 	players;
 	scores;
@@ -12,37 +15,47 @@ module.exports = class Reader {
 	constructor () {
 		this.width = 0;
 		this.height = 0;
-		this.readingMap = false;
+		this.state = 'idle';
 		this.map = [];
+		this.pieceWidth = 0;
+		this.pieceHeight = 0;
+		this.piece = [];
 		this.history = [];
 		this.players = [];
 		this.scores = [0, 0];
 	}
 
 	processInput(input) {
-		if (this.readingMap) {
+		if (this.state === 'readingMap') {
 			this.readMap(input);
-		} else if (input.startsWith('$$$')) {
-			this.players.push(input.substring(32, -8));
-			// this.playerNumber =  input.includes('p1') ? 1 : 2;
-			// log(`we're number playerNumber\n`);
-		} else if (input.startsWith('Plateau')) {
+		} if (this.state === 'readingPiece') {
+			this.readPiece(input);
+		} if (input.startsWith('$$$')) {
+			this.players.push(input.slice(33, -8));
+		} if (input.startsWith('Plateau')) {
 			if (this.map.length != 0) {
-				this.history.push({
-									'map': this.map,
-									'score': this.score
-								  });
+				this.history.push({ 'map': this.map,
+									'score': this.scores,
+									'piece': this.piece });
 			}
+			this.map = [];
 			this.height = +input.split(' ')[1];
-			this.width = +input.split(' ')[2].substring(0, 2);
-			this.readingMap = true;
-		} 
+			this.width = +input.split(' ')[2].slice(0, -1);
+			this.state = 'readingMap';
+		} if (input.startsWith('Piece')) {
+			this.piece = [];
+			this.pieceHeight = +input.split(' ')[1];
+			this.pieceWidth = +input.split(' ')[2]
+									.slice(0, -1);
+			// log(`ph: ${this.pieceHeight}, pw: ${this.pieceWidth}`);
+			this.state = 'readingPiece';
+		}
 	}
 
 	_getRowScore(row, char) {
-		let score = row.toLowerCase().reduce((sum, currentChar) => {
-			return sum + (currentChar === char) ? 1 : 0;
-		})
+		return row.toLowerCase().split('').reduce((sum, currentChar) => {
+			return currentChar === char ? sum + 1 : sum;
+		}, 0);
 	}
 
 	/**
@@ -50,12 +63,14 @@ module.exports = class Reader {
 	 * stores results in array 'scores'
 	 */
 
-	getScore() {
-		scores[0] = map.reduce((sum, currentRow) => {
-			return sum + _getRowScore(currentRow, 'o');
+	getScores() {
+		this.scores[0] = this.map.reduce((sum, currentRow) => {
+			// log(`sum: ${sum}, currentRow: ${currentRow}`);
+			// log(this._getRowScore(currentRow, 'o'));
+			return sum + this._getRowScore(currentRow, 'o');
 		}, 0)
-		scores[1] = map.reduce((sum, currentRow) => {
-			return sum + _getRowScore(currentRow, 'x');
+		this.scores[1] = this.map.reduce((sum, currentRow) => {
+			return sum + this._getRowScore(currentRow, 'x');
 		}, 0)
 	}
 
@@ -63,17 +78,26 @@ module.exports = class Reader {
 	 * method readMap(input)
 	 * reads map line by line from input string
 	 * controls map height based on this.height (taken from string 'Plateau h w:')
-	 * cnt variable is needeed to skip first line of the map (with coordinates: '    01234567890123456')
 	 */
 
 	readMap(input) {
-		if (this.map.length <= this.height) {
-			this.map.push(input.split(' ')[1]);
-			// log(this.map);
-			// log(`${cnt}: ${map[map.length - 1]}\ninput: ${input.split(' ')[1]}, height: ${height}`);
+		if (this.map.length < this.height) {
+			let row = input.split(' ')[1];
+			if (row.length == this.width) {
+				this.map.push(input.split(' ')[1]);
+			}
 		} else {
-			this.map.unshift();
-			this.readingMap = false;
+			this.state = 'idle';
+			this.getScores();
+		}
+	}
+
+	readPiece(input) {
+		if (this.piece.length < this.pieceHeight) {
+			this.piece.push(input);
+		} else {
+			this.state = 'idle';
+			this.getScores();
 		}
 	}
 
@@ -84,19 +108,8 @@ module.exports = class Reader {
 			let data = row.split('')
 					.map(symbol => symbol === '.' ? cellTemplate : cellTemplate.replace('dot', symbol))
 					.join('');
-			// log(data);
 			return rowTemplate.replace('data', data);
 		}).join('');
-		// log(map);
 		return outputmap;
-	}
-
-	printMap() {
-		for (let i = 0; i < this.map.length; i++) {
-			log(`${this.map[i]}`);
-		}
-	}
-
-
-	
+	}	
 }

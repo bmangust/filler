@@ -2,13 +2,13 @@ const express = require("express");
 const readline = require("readline");
 const app = express();
 const {log} = require('./utils');
-//const { spawn } = require('child_process');
+const jsonParser = express.json();
 const resourcepath = '../resources';
-const bodyParser = require("body-parser");
-//const fillervm = spawn(`${resourcepath}/filler_vm -f ${resourcepath}/maps/map00 -p1 ${resourcepath}/players/akraig.filler -p2 ${resourcepath}/players/carli.filler`);
+let settings = { players: [ 'akraig', 'abanlin' ], map: 'map00' };
+const { spawn } = require('child_process');
+const fillervm = spawn(`${resourcepath}/filler_vm -f ${resourcepath}/maps/${settings.map} -p1 ${resourcepath}/players/${settings.players[0]}.filler -p2 ${resourcepath}/players/${settings.players[1]}.filler`);
 
-const path = `${__dirname}/server`;
-const urlencodedParser = bodyParser.urlencoded({extended: false});
+const path = `${__dirname}/client`;
 const rl = readline.createInterface({
 	input: process.stdin,
 	output: process.stdout
@@ -19,21 +19,22 @@ const reader = new Reader();
 app.use(express.static(path));
 
 app.get("/", function(request, response){
-    response.sendFile(__dirname + "/server/index.html");
+    response.sendFile(__dirname + "/client/index.html");
 });
 app.get("/game", function(request, response){
-    response.sendFile(__dirname + "/server/game.html");
+    response.sendFile(__dirname + "/client/game.html");
 });
 app.get("/settings", function(request, response){
-    response.sendFile(__dirname + "/server/settings.html");
+    response.sendFile(__dirname + "/client/settings.html");
 });
 app.get("/about", function(request, response){
-    response.sendFile(__dirname + "/server/about.html");
+    response.sendFile(__dirname + "/client/about.html");
 });
-app.post("/settings", urlencodedParser, function (request, response) {
-    if(!request.body) return response.sendStatus(400);
-    console.log(request.body);
-    response.send(`players: ${request.body.player1} and ${request.body.player2}, map: ${request.body.map}`);
+app.post("/settings", jsonParser, function (request, response) {
+	console.log(request.body);
+    if(!request.body) return response.json({ status:400,message:'Error' });
+	response.json({ status:202,message:'Saved' });
+
 });
 
 const getProperty = (input) => {
@@ -45,21 +46,6 @@ rl.on('line', (input) => {
 	if (input.startsWith('get ')) {
 		getProperty(input);
 	}
-	// switch (input) {
-	// 	case 'get map':
-	// 		reader.printMap();
-	// 		break;
-	// 	case 'get maparr':
-	// 		log(reader.getMap());
-	// 		break;
-	// 	case 'get params':
-	// 		rl.write(`width: ${reader.width}, height: ${reader.height}\n`);
-	// 		break;
-	// 	case 'get player':
-	// 		rl.write(`we're number ${reader.playerNumber}\n`);
-	// 		break;
-	// default:
-	// }
 	reader.processInput(input);
 });
 

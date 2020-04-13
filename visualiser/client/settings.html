@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Регистрация</title>
+    <meta charset="utf-8" />
+    <link href="./style.css" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+    <h1>Filler settings</h1>
+    <section>
+        <form name="settings">
+            <label class="uppercase">Player 1</label><br>
+            <select type="text" name="player1">
+                <!-- TODO: dynamically insert players based on folder's content -->
+                <option value="abanlin">abanlin</option>
+                <option value="abarriel">abarriel</option>
+                <option value="akraig" selected>akraig</option>
+                <option value="carli">carli</option>
+                <option value="carodrig">carodrig</option>
+                <option value="champely">champely</option>
+                <option value="grati">grati</option>
+                <option value="hcao">hcao</option>
+            </select><br><br>
+            <label class="uppercase">Player 2</label><br>
+            <select type="text" name="player2">
+                <option value="abanlin" selected>abanlin</option>
+                <option value="abarriel">abarriel</option>
+                <option value="akraig">akraig</option>
+                <option value="carli">carli</option>
+                <option value="carodrig">carodrig</option>
+                <option value="champely">champely</option>
+                <option value="grati">grati</option>
+                <option value="hcao">hcao</option>
+            </select><br><br>
+            <label class="uppercase">Map size</label><br>
+            <select type="text" name="map">
+                <option selected value="map00">small</option>
+                <option value="map01">medium</option>
+                <option value="map02">big</option>
+            </select><br><br>
+            <input class="button" type="button" id="cancel" value="Cancel" />
+            <input class="button" type="submit" id="submit" value="Save" />
+        </form>
+    </section>
+    <script type="text/javascript">
+        document.getElementById("cancel").onclick = () => {
+            location.href = "http://localhost:3000/";
+        };
+        
+        function tempAlert(code,msg,duration)
+        {
+            let bgColor = '#2a2a2a';
+            let textColor = '#fafafa';
+            if (code > 399) {
+                bgColor = '#b00020';
+            }
+            var el = document.createElement("div");
+            el.setAttribute("style",`position:absolute;
+                                     bottom:4%;
+                                     left:4%;
+                                     padding: 20px 50px;
+                                     text-align: center;
+                                     background-color:${bgColor};
+                                     color:${textColor}`);
+            el.innerHTML = msg;
+            setTimeout(function(){
+                el.parentNode.removeChild(el);
+            },duration);
+            document.body.appendChild(el);
+        }
+        
+
+        document.getElementById("submit").addEventListener("click", e => {
+             e.preventDefault();
+            // получаем данные формы
+            let settings = document.forms["settings"];
+            let players = [];
+            players.push(settings.elements["player1"].value);
+            players.push(settings.elements["player2"].value);
+            let map = settings.elements["map"].value;
+            // сериализуем данные в json
+            let data = JSON.stringify({players: players, map: map});
+            let request = new XMLHttpRequest();
+             request.open("POST", "/settings", true);
+             request.setRequestHeader("Content-Type", "application/json");
+             request.addEventListener("load", () => {
+                 let resp = JSON.parse(request.response);
+                 console.log(resp.status);
+                 if (resp.status !== 400) {
+                     tempAlert(resp.status, 'Saved', 2000);
+                 } else {
+                     tempAlert(resp.status, 'Error', 2000);
+                 }
+                 let req = new XMLHttpRequest();
+                 req.open("GET", "/");
+                 req.send();
+             });
+             request.send(data);
+         });
+    </script>
+</body>
+</html>

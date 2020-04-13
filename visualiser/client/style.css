@@ -1,0 +1,140 @@
+
+@import url('https://fonts.googleapis.com/css2?family=Montserrat&display=swap');
+
+/* general style */
+
+* {
+    margin: 0;
+    padding: 0;
+    font-family: 'Montserrat', sans-serif;
+}
+
+h1 {
+    color: #fafafa;
+    margin-top: 4rem;
+    text-align: center;
+}
+
+.uppercase {
+    text-transform: uppercase;
+}
+
+body {
+    background-color: #1a1a1a;
+}
+
+section {
+    padding-top: 2rem;
+    width: 80%;
+    text-align: center;
+    margin: auto;
+}
+
+ul {
+    list-style: none;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+}
+
+/* index */
+
+
+/* .menuItem {
+}
+
+.menuItem:hover {
+} */
+
+.menuItem {
+    display: block;
+    text-decoration: none;
+    color: #fafafa;
+    padding: 10px 20px;
+    width: 60%;
+    margin: 10px auto;
+    text-align: center;
+    border-radius: 5px;
+    border: 1px solid #202020;
+    background-color: #1a1a1a;
+    transition: 0.3s;
+}
+
+.menuItem:hover {
+    background-color: #2a2a2a;
+    color: #bb86fc;
+    transition: 0.6s;
+}
+
+
+footer {
+    text-align: right;
+    padding: 3rem;
+    color: #444;
+    font-size: 0.9rem;
+}
+
+/* settings */
+
+label {
+    color: #fafafa;
+}
+
+select {
+    width: 100%;
+    padding: 10px 20px;
+    margin: 10px 0;
+    display: inline-block;
+    border-radius: 5px;
+}
+
+.button {
+  width: 35%;
+  background-color: rgb(26, 19, 122);
+  color: white;
+  padding: 14px 20px;
+  margin: 8px 2rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.button:hover {
+    background-color: rgb(50, 43, 151);
+    transition: 0.6s;
+}
+
+/* game */
+
+.row {
+    flex-direction: row;
+}
+
+.cell {
+    background-color: #444;
+    width: 20px;
+    height: 20px;
+    margin: 1px;
+    display: block;
+}
+
+.X {
+    background-color: darkred;
+}
+
+.O {
+    background-color: rgb(39, 39, 138);
+}
+
+.x {
+    background-color: rgb(151, 25, 25);
+}
+
+.o {
+    background-color: rgb(70, 70, 192);
+}
+
+#field {
+    display: flex;
+    flex-direction: column;
+}
