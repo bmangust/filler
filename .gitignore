@@ -3,6 +3,7 @@
 cmake-build-debug/
 obj/
 printf/obj/
+node_modules/
 *.[oa]
 *.out
 akraig.filler

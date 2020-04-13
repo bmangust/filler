@@ -7,7 +7,6 @@ include_directories(inc)
 include_directories(printf/inc)
 
 add_executable(filler
-        inc/array_list.h
         inc/filler.h
         printf/inc/ft_printf.h
         printf/inc/libft.h
@@ -100,11 +99,11 @@ add_executable(filler
         printf/src/ft_wordlen.c
         printf/src/ft_wrdcnt.c
         printf/src/get_next_line.c
-        src/array_list.c
         src/dots.c
+        src/enemy.c
         src/error.c
+        src/heatmap.c
         src/main.c
         src/map.c
         src/moves.c
-        src/piece.c
-        src/heatmap.c src/enemy.c)
+        src/piece.c)

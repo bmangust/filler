@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_print_float_concat.c                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jbloodax <jbloodax@student.42.fr>          +#+  +:+       +#+        */
+/*   By: max <max@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/09 19:37:00 by akraig            #+#    #+#             */
-/*   Updated: 2020/02/12 14:25:57 by jbloodax         ###   ########.fr       */
+/*   Updated: 2020/03/24 11:30:24 by max              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,7 @@ char	*count_exp(t_double *num, int is_integer)
 	if (exp >= 0 && exp < 53)
 		return ((is_integer) ? ft_strsub(num->mant, 0, exp + 1) :
 			ft_strsub(num->mant, exp + 1, 53));
-		if (exp > 52 && is_integer)
+	if (exp > 52 && is_integer)
 	{
 		bin = add_symbols(num->mant, '0', exp - 52, 1);
 		num->mant = ft_strdup("0");

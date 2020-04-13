@@ -12,7 +12,7 @@
 
 .PHONY: all clean fclean re
 
-NAME = akraig.filler
+PLAYERNAME = akraig.filler
 
 PLAYERDIR = ./resources/players
 
@@ -32,8 +32,7 @@ FLAGS = -Wall -Werror -Wextra
 
 INCLUDES = -I$(INC_DIR) -I$(LIB_INC_DIR)
 
-SRC =	array_list.c \
-		dots.c \
+SRC =	dots.c \
 		enemy.c \
 		error.c \
 		heatmap.c \
@@ -42,20 +41,22 @@ SRC =	array_list.c \
 		moves.c \
 		piece.c \
 
+INC = 	filler.h
+
 OBJ = $(SRC:.c=.o)
 
 OBJS = $(addprefix $(OBJ_DIR)/, $(OBJ))
 
-NAMEDIR = @(addprefix @(PLAYERDIR)/, $(NAME))
+NAME = $(addprefix $(PLAYERDIR)/, $(PLAYERNAME))
 
 all: $(NAME)
 
-$(NAME): $(OBJ_DIR) $(OBJS) $(NAMEDIR)
+$(NAME): $(OBJ_DIR) $(OBJS)
 	@echo "Compiling libft. Please wait..."
 	@make -C printf/
 	@echo "libft done"
 	@echo "compiling filler"
-	@gcc -o $(PLAYERDIR)/$(NAME) $(OBJS) $(INCLUDES) $(LIBRARIES)
+	@gcc -o $(NAME) $(OBJS) $(INCLUDES) $(LIBRARIES)
 	@echo "We're ready to work"
 	@echo "make p1=akraig p2=carli m=0 game to start a game om a small map"
 	@echo "change m from 0 to 2 to vary map size"
@@ -63,11 +64,11 @@ $(NAME): $(OBJ_DIR) $(OBJS) $(NAMEDIR)
 $(OBJ_DIR):
 	mkdir -p $(OBJ_DIR)
 
-$(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
+$(OBJ_DIR)/%.o: $(SRC_DIR)/%.c $(INC_DIR)/$(INC)
 	@gcc $(FLAGS) $(INCLUDES) -o $@ -c $<
 
-$(NAMEDIR):
-	mkdir -p $(PLAYERDIR)
+# $(NAMEDIR):
+# 	mkdir -p $(PLAYERDIR)
 
 clean:
 	@echo "cleaninig"

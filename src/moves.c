@@ -1,10 +1,17 @@
 #include "filler.h"
 
+/*
+**	caclulate summary heap for selected position
+*/
+
 int		get_heat(t_map *map, t_piece *p, t_dot dot)
 {
 	t_dot	*pcur;
 
+	if (!map->heatmap)
+		return (0);
 	pcur = init_dot(-1, -1, 0);
+	dot.heat = 0;
 	while (++pcur->j < p->height)
 	{
 		pcur->i = -1;
@@ -91,7 +98,7 @@ int		is_closer_to_ceneter(t_dot dot, t_dot best, t_map map)
 	d[0] = ft_absint(map.width / 2 - dot.i) +
 			ft_absint(map.height / 2 - dot.j);
 	d[1] = ft_absint(map.width / 2 - best.i) +
-		   ft_absint(map.height / 2 - best.j);
+			ft_absint(map.height / 2 - best.j);
 	return d[0] < d[1] ? 1 : 0;
 }
 
@@ -143,7 +150,7 @@ int		is_placeable(t_dot *coord, t_map *map, t_piece *p)
 				&& map->map[coord->j + tmp[1]][coord->i + tmp[0]] == '.'))
 				tmp[0] += 1;
 			else if (!was_intersection && p->map[tmp[1]][tmp[0]] == '*' &&
-					 map->map[coord->j + tmp[1]][coord->i + tmp[0]] == map->c)
+					map->map[coord->j + tmp[1]][coord->i + tmp[0]] == map->c)
 			{
 				was_intersection = 1;
 				tmp[0] += 1;
@@ -177,6 +184,7 @@ int		next_move(t_map *map)
 	}
 	map_a_map(map, &reset_heatmap);
 	clear_dots(&(map->placeable));
+	map->placeable_candidates = 0;
 	delete_piece(&p);
 	clear_map(map);
 	return (OK);
@@ -187,19 +195,21 @@ void	safe_play(t_map *map)
 	t_piece	*p;
 	t_dot	*dot;
 
-	ft_fprintf(2, "=============safe play=============\n");
+//	ft_fprintf(2, "=============safe play=============\n");
 	p = init_piece();
+//	calculate_heatmap(map);
 	process_map(map, p);
 	dot = choose_candidate(map->placeable, map, &is_closer_to_ceneter);
 	if (dot)
 		ft_printf("%d %d\n", dot->j, dot->i);
 	else
 	{
-		ft_fprintf(2, "no candidates\n");
+//		ft_fprintf(2, "no candidates\n");
 		ft_printf("%d %d\n", 0, 0);
 		delete_piece(&p);
 	}
 	clear_dots(&(map->placeable));
+	map->placeable_candidates = 0;
 	delete_piece(&p);
 	clear_map(map);
 }

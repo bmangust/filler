@@ -92,12 +92,13 @@ void	clear_map(t_map *map)
 }
 
 
-void	free_map(t_map **map)
+int 	free_map(t_map **map)
 {
 	if (!map || !*map)
-		return;
+		return (0);
 	clear_map(*map);
 	clear_dots(&((*map)->enemies));
 	free(*map);
 	*map = NULL;
+	return (0);
 }

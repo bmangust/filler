@@ -52,7 +52,7 @@ $(NAME): $(OBJS)
 $(OBJ_DIR):
 	mkdir -p $(OBJ_DIR)
 
-$(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
+$(OBJ_DIR)/%.o: $(SRC_DIR)/%.c $(INC_DIR)
 	@gcc $(FLAGS) -I $(INC_DIR) -o $@ -c $<
 
 clean:

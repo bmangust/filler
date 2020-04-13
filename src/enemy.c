@@ -16,6 +16,8 @@
 **	i[0] - y coord
 **	i[1] - x coord
 **	i[2] - cnt enemies
+**	finds out if enemy is alive and counts enemy dots
+**	if enemy is already dead - just return 0 (not alive)
 */
 
 int		count_enemies(t_map *map)
@@ -24,10 +26,15 @@ int		count_enemies(t_map *map)
 
 	i[0] = -1;
 	i[2] = 0;
+	if (!map->is_alive)
+		return (0);
 	while (++i[0] < map->height)
+	{
+		i[1] = -1;
 		while (++i[1] < map->width)
 			if (ft_toupper(map->map[i[0]][i[1]]) == map->enemy)
 				i[2]++;
+	}
 	if (i[2] == map->cnt_enemies)
 		map->is_alive = 0;
 	else

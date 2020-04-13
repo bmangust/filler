@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   filler.h                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: max <max@student.42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2020/03/21 23:42:45 by max               #+#    #+#             */
+/*   Updated: 2020/04/12 16:12:51 by max              ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef FILLER_H
 # define FILLER_H
 # define OK 0
@@ -71,7 +83,7 @@ void				get_free_space(t_map *map, int i, int j, t_piece *p);
 t_map				*init_map(void);
 int					get_player(t_map *map);
 int					get_map(t_map *map);
-void				free_map(t_map **map);
+int 				free_map(t_map **map);
 void				clear_map(t_map *map);
 t_piece				*init_piece();
 void				delete_piece(t_piece **p);

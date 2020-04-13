@@ -26,12 +26,9 @@ int		get_distance(t_dot enemy, t_dot cur)
 	return (diff[2]);
 }
 
-//вынести поиск врагов в отдельную функцию
-//(или забить, хз как скажется на производительности)
-
 void	get_heatmap(t_map *map)
 {
-	int	i[2];
+	int		i[2];
 
 	if (!map->heatmap)
 		map->heatmap = (int**)malloc(sizeof(int*) * map->height);
@@ -72,7 +69,6 @@ void	set_dot(t_dot *target, t_dot source)
 t_dot	*get_next_enemy(t_map *map, t_dot *enemy, int only_new)
 {
 	t_dot	*tmp;
-//	(void)	only_new;
 
 	if (!map || !map->enemies)
 		return (NULL);
