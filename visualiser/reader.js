@@ -10,6 +10,7 @@ module.exports = class Reader {
 	piece;
 	history;
 	players;
+	mapSize;
 	scores;
 
 	constructor () {
@@ -22,6 +23,7 @@ module.exports = class Reader {
 		this.piece = [];
 		this.history = [];
 		this.players = [];
+		this.mapSize = 'map00';
 		this.scores = [0, 0];
 	}
 
@@ -101,15 +103,23 @@ module.exports = class Reader {
 		}
 	}
 
-	getMap() {
+	getMap(map) {
 		const cellTemplate = '<li class="cell dot"></li>';
 		const rowTemplate = '<ul class="row">data</ul>';
-		let outputmap = this.map.map(row => {
+		let outputmap = map.map(row => {
 			let data = row.split('')
 					.map(symbol => symbol === '.' ? cellTemplate : cellTemplate.replace('dot', symbol))
 					.join('');
 			return rowTemplate.replace('data', data);
 		}).join('');
 		return outputmap;
-	}	
+	}
+
+	getSettings() {
+		return {players:this.players, map:this.mapSize};
+	}
+
+	getHistory(index) {
+		return this.history[index];
+	}
 }

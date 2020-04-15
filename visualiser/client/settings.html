@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Регистрация</title>
-    <meta charset="utf-8" />
-    <link href="./style.css" rel="stylesheet">
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="./style.css" rel="stylesheet">
+    <title>Filler settings</title>
 </head>
 <body>
     <h1>Filler settings</h1>
@@ -14,24 +14,26 @@
             <select type="text" name="player1">
                 <!-- TODO: dynamically insert players based on folder's content -->
                 <option value="abanlin">abanlin</option>
-                <option value="abarriel">abarriel</option>
                 <option value="akraig" selected>akraig</option>
                 <option value="carli">carli</option>
-                <option value="carodrig">carodrig</option>
                 <option value="champely">champely</option>
                 <option value="grati">grati</option>
                 <option value="hcao">hcao</option>
+                <option value="hcao">lcharvol</option>
+                <option value="hcao">superjeannot</option>
+                <option value="hcao">zweng</option>
             </select><br><br>
             <label class="uppercase">Player 2</label><br>
             <select type="text" name="player2">
                 <option value="abanlin" selected>abanlin</option>
-                <option value="abarriel">abarriel</option>
                 <option value="akraig">akraig</option>
                 <option value="carli">carli</option>
-                <option value="carodrig">carodrig</option>
                 <option value="champely">champely</option>
                 <option value="grati">grati</option>
                 <option value="hcao">hcao</option>
+                <option value="hcao">lcharvol</option>
+                <option value="hcao">superjeannot</option>
+                <option value="hcao">zweng</option>
             </select><br><br>
             <label class="uppercase">Map size</label><br>
             <select type="text" name="map">
@@ -39,35 +41,64 @@
                 <option value="map01">medium</option>
                 <option value="map02">big</option>
             </select><br><br>
-            <input class="button" type="button" id="cancel" value="Cancel" />
-            <input class="button" type="submit" id="submit" value="Save" />
+            <input class="uppercase button" type="button" id="cancel" value="Cancel" />
+            <input class="uppercase button" type="submit" id="submit" value="Save" />
         </form>
     </section>
+    <footer>
+        <span>Handcrafted by akraig</span>
+    </footer>
     <script type="text/javascript">
         document.getElementById("cancel").onclick = () => {
             location.href = "http://localhost:3000/";
         };
         
-        function tempAlert(code,msg,duration)
+        function tempAlert(data,duration)
         {
-            let bgColor = '#2a2a2a';
-            let textColor = '#fafafa';
-            if (code > 399) {
-                bgColor = '#b00020';
-            }
+            data = JSON.parse(data);
+            console.log(`status: ${data.status}, message: ${data.message}`);
+            let status = (data.code > 399) ? 'error' : 'ok';
             var el = document.createElement("div");
-            el.setAttribute("style",`position:absolute;
-                                     bottom:4%;
-                                     left:4%;
-                                     padding: 20px 50px;
-                                     text-align: center;
-                                     background-color:${bgColor};
-                                     color:${textColor}`);
-            el.innerHTML = msg;
+            el.setAttribute('class', `tempMessage ${status}`)
+            // el.setAttribute("style",`position:absolute;
+            //                          bottom:4%;
+            //                          left:4%;
+            //                          padding: 20px 50px;
+            //                          text-align: center;
+            //                          background-color:${bgColor};
+            //                          color:${textColor}`);
+            el.innerHTML = data.message !== undefined ? data.message : 'Error';
             setTimeout(function(){
                 el.parentNode.removeChild(el);
             },duration);
             document.body.appendChild(el);
+        }
+
+        function postSettings(data) {
+            let post = new XMLHttpRequest();
+            post.open("POST", "/settings", true);
+            post.setRequestHeader("Content-Type", "application/json");
+            post.send(data);
+
+            let promise = new Promise((resolve, reject) => {
+                post.onload = () => {
+                if (post.status >= 200 && post.status < 400) {
+                    resolve(post);
+                } else {
+                    reject(post);
+                }
+            }
+            });
+            return promise;
+            
+            // let post = {
+            //     method: 'post',
+            //     headers: {
+            //         "Content-Type": "application/json"
+            //     },
+            //     body: data
+            // }
+            // return fetch('/settings', post);
         }
         
 
@@ -81,22 +112,16 @@
             let map = settings.elements["map"].value;
             // сериализуем данные в json
             let data = JSON.stringify({players: players, map: map});
-            let request = new XMLHttpRequest();
-             request.open("POST", "/settings", true);
-             request.setRequestHeader("Content-Type", "application/json");
-             request.addEventListener("load", () => {
-                 let resp = JSON.parse(request.response);
-                 console.log(resp.status);
-                 if (resp.status !== 400) {
-                     tempAlert(resp.status, 'Saved', 2000);
-                 } else {
-                     tempAlert(resp.status, 'Error', 2000);
-                 }
-                 let req = new XMLHttpRequest();
-                 req.open("GET", "/");
-                 req.send();
-             });
-             request.send(data);
+            let result = postSettings(data)
+                            .then(ok => {
+                                console.log(ok.response);
+                                tempAlert(ok.response, 2000);
+                            })
+                            .then(fetch('/'))
+                            .catch(error => {
+                                console.log(error.response);
+                                tempAlert(error.response, 2000);
+                            })
          });
     </script>
 </body>

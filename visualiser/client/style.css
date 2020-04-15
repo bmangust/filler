@@ -7,10 +7,10 @@
     margin: 0;
     padding: 0;
     font-family: 'Montserrat', sans-serif;
+    color: #fafafa;
 }
 
 h1 {
-    color: #fafafa;
     margin-top: 4rem;
     text-align: center;
 }
@@ -37,33 +37,65 @@ ul {
     flex-direction: column;
 }
 
-/* index */
-
-
-/* .menuItem {
+.tempMessage {
+    position:absolute;
+    bottom:4%;
+    left:4%;
+    padding: 20px 50px;
+    text-align: center;
+    transition: 0.5s;
 }
 
-.menuItem:hover {
-} */
+.ok {
+    background-color: #00695c;
+}
 
-.menuItem {
-    display: block;
+.error {
+    background-color: #b00020;
+}
+
+.left {
+    text-align: left;
+}
+
+.center {
+    text-align: center;
+}
+
+.inset {
+    padding-left: 1rem;
+}
+
+.gray {
+    color: lightgray;
+}
+
+.button {
+    display: inline-block;
     text-decoration: none;
     color: #fafafa;
     padding: 10px 20px;
-    width: 60%;
-    margin: 10px auto;
+    width: 20rem;
+    margin: 10px 2rem;
     text-align: center;
     border-radius: 5px;
-    border: 1px solid #202020;
+    border: 1px solid #a1a1a1;
     background-color: #1a1a1a;
     transition: 0.3s;
 }
 
-.menuItem:hover {
+.button:hover {
     background-color: #2a2a2a;
+    border: 1px solid #6d6d6d;
     color: #bb86fc;
     transition: 0.6s;
+}
+
+/* index */
+
+.menuItem {
+    width: 60%;
+    margin: 10px auto;
 }
 
 
@@ -88,20 +120,9 @@ select {
     border-radius: 5px;
 }
 
-.button {
-  width: 35%;
-  background-color: rgb(26, 19, 122);
-  color: white;
-  padding: 14px 20px;
-  margin: 8px 2rem;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-.button:hover {
-    background-color: rgb(50, 43, 151);
-    transition: 0.6s;
+select, select>* {
+    color: #1a1a1a;
+    font-weight: 600;
 }
 
 /* game */
@@ -137,4 +158,29 @@ select {
 #field {
     display: flex;
     flex-direction: column;
+}
+
+/* about */
+
+h2 {
+    margin: 1rem 0;
+}
+
+.icon {
+    width: 70px;
+    height: 70px;
+    opacity: 80%;
+    padding: 0.5rem;
+}
+
+.icon:hover {
+    opacity: 100%;
+}
+
+.flex {
+    display: flex;
+}
+
+.center-vert {
+    align-items: center;
 }
