@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="./style.css" rel="stylesheet">
+    <script src="./util.js" type="text/javascript"></script> 
     <title>Filler settings</title>
 </head>
 <body>
@@ -41,8 +42,8 @@
                 <option value="map01">medium</option>
                 <option value="map02">big</option>
             </select><br><br>
-            <input class="uppercase button" type="button" id="cancel" value="Cancel" />
-            <input class="uppercase button" type="submit" id="submit" value="Save" />
+            <input class="button" type="button" id="cancel" value="Cancel" />
+            <input class="button" type="submit" id="submit" value="Save" />
         </form>
     </section>
     <footer>
@@ -52,58 +53,9 @@
         document.getElementById("cancel").onclick = () => {
             location.href = "http://localhost:3000/";
         };
-        
-        function tempAlert(data,duration)
-        {
-            data = JSON.parse(data);
-            console.log(`status: ${data.status}, message: ${data.message}`);
-            let status = (data.code > 399) ? 'error' : 'ok';
-            var el = document.createElement("div");
-            el.setAttribute('class', `tempMessage ${status}`)
-            // el.setAttribute("style",`position:absolute;
-            //                          bottom:4%;
-            //                          left:4%;
-            //                          padding: 20px 50px;
-            //                          text-align: center;
-            //                          background-color:${bgColor};
-            //                          color:${textColor}`);
-            el.innerHTML = data.message !== undefined ? data.message : 'Error';
-            setTimeout(function(){
-                el.parentNode.removeChild(el);
-            },duration);
-            document.body.appendChild(el);
-        }
-
-        function postSettings(data) {
-            let post = new XMLHttpRequest();
-            post.open("POST", "/settings", true);
-            post.setRequestHeader("Content-Type", "application/json");
-            post.send(data);
-
-            let promise = new Promise((resolve, reject) => {
-                post.onload = () => {
-                if (post.status >= 200 && post.status < 400) {
-                    resolve(post);
-                } else {
-                    reject(post);
-                }
-            }
-            });
-            return promise;
-            
-            // let post = {
-            //     method: 'post',
-            //     headers: {
-            //         "Content-Type": "application/json"
-            //     },
-            //     body: data
-            // }
-            // return fetch('/settings', post);
-        }
-        
 
         document.getElementById("submit").addEventListener("click", e => {
-             e.preventDefault();
+            e.preventDefault();
             // получаем данные формы
             let settings = document.forms["settings"];
             let players = [];
@@ -112,17 +64,21 @@
             let map = settings.elements["map"].value;
             // сериализуем данные в json
             let data = JSON.stringify({players: players, map: map});
-            let result = postSettings(data)
+            let result = postSettings(data, "/settings")
                             .then(ok => {
-                                console.log(ok.response);
+                                log(`promise resolve: ${ok.response}`);
                                 tempAlert(ok.response, 2000);
                             })
-                            .then(fetch('/'))
+                            .then(
+                                // setTimeout(() => {
+                                //     window.location.replace('http://localhost:3000')
+                                // }, 500)
+                            )
                             .catch(error => {
-                                console.log(error.response);
+                                log(`promise reject: ${error.response}`);
                                 tempAlert(error.response, 2000);
                             })
-         });
+        });
     </script>
 </body>
 </html>

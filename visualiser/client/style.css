@@ -8,6 +8,7 @@
     padding: 0;
     font-family: 'Montserrat', sans-serif;
     color: #fafafa;
+    /* border: 1px solid white; */
 }
 
 h1 {
@@ -73,6 +74,7 @@ ul {
 .button {
     display: inline-block;
     text-decoration: none;
+    text-transform: uppercase;
     color: #fafafa;
     padding: 10px 20px;
     width: 20rem;
@@ -89,6 +91,11 @@ ul {
     border: 1px solid #6d6d6d;
     color: #bb86fc;
     transition: 0.6s;
+}
+
+.flex {
+    display: flex;
+    align-items: center;
 }
 
 /* index */
@@ -133,31 +140,100 @@ select, select>* {
 
 .cell {
     background-color: #444;
-    width: 20px;
-    height: 20px;
     margin: 1px;
     display: block;
 }
 
+.c00 {
+    width: 20px;
+    height: 20px;
+}
+
+.c01 {
+    width: 10px;
+    height: 10px;
+}
+
+.c02 {
+    width: 5px;
+    height: 5px;
+}
+
 .X {
-    background-color: darkred;
+    background-color: #0277bc;
 }
 
 .O {
-    background-color: rgb(39, 39, 138);
+    background-color: #00695c;
 }
 
 .x {
-    background-color: rgb(151, 25, 25);
+    background-color: #58a5ef;
 }
 
 .o {
-    background-color: rgb(70, 70, 192);
+    background-color: #439889;
 }
 
 #field {
+    width: 40vw;
+    height: 40vw;
+    max-height: 70vh;
+    flex: 4 1 50%;
+}
+
+.fieldWrapper {
     display: flex;
     flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+}
+
+.infoAndControls {
+    width: 25vw;
+    flex: 1 4 300px;
+    flex-direction: column;
+}
+
+.controlPanel {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.control {
+    margin-right: 10px;
+    margin-left: 10px;
+}
+
+.playerScore {
+    width: 100%;
+    margin: 3px 0;
+    background-color:  #444;
+}
+
+.scoreWrapper {
+    text-align: left;
+    width: 20rem;
+}
+
+.scoreWrapper>* {
+    box-sizing:border-box;
+}
+
+.scoreBar {
+    height: 1rem;
+}
+
+#playerX {
+    width: 40%;
+    height: 1rem;
+}
+
+#playerO {
+    width: 20%;
+    height: 1rem;
 }
 
 /* about */
@@ -175,12 +251,4 @@ h2 {
 
 .icon:hover {
     opacity: 100%;
-}
-
-.flex {
-    display: flex;
-}
-
-.center-vert {
-    align-items: center;
 }
