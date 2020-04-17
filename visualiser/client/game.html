@@ -1,10 +1,11 @@
-<!DOCTYPE html>
+show <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="./style.css" rel="stylesheet">
-    <script src="./util.js" type="text/javascript"></script> 
+	<script src="./util.js" type="text/javascript"></script>
+	<script src="/socket.io/socket.io.js"></script>
     <title>Filler game</title>
 </head>
 <body>
@@ -50,6 +51,7 @@
     </footer>
     <script>
         let timerID;
+		const socket = io();
 
         const updateField = (map) => {
             document.querySelector('#field').innerHTML = getField(map);
@@ -59,43 +61,36 @@
             let maxLength = score[0];
             let player1width = score[1] * 100 / maxLength;
             let player2width = score[2] * 100 / maxLength;
-            document.querySelector('#playerX').style.width =  `${player1width}%`;
-            document.querySelector('#playerO').style.width =  `${player2width}%`;
-        };
+            document.querySelector('#playerO').style.width =  `${player1width}%`;
+            document.querySelector('#playerX').style.width =  `${player2width}%`;
+		};
 
-        const updateState = (state) => {
-            log(`state: ${state}`);
-            postSettings(JSON.stringify({'state':state}), '/control')
-                .then(ok => {
-                    log(JSON.parse(ok.response));
-                    updateField(JSON.parse(ok.response).map);
-                    updateScore(JSON.parse(ok.response).score);
-                    log(JSON.parse(ok.response).players);
-                    updatePlayers(JSON.parse(ok.response).players);
-                })
-                .catch(err => {
-                    log(`error in start (post): ${err}`);
-                    tempAlert(JSON.stringify({status:400}));
-                })
-        }
+		const updatePlayers = (players) => {
+			if (players.length == 2) {
+				document.querySelector('#playerOname').innerHTML = players[0];
+				document.querySelector('#playerXname').innerHTML = players[1];
+			}
+		};
+		
+		const sendState = (state) => {
+			socket.emit('state', state);
+		};
 
-        const updatePlayers = (players) => {
-            if (players.length == 2) {
-                document.querySelector('#playerXname').innerHTML = players[0];
-                document.querySelector('#playerOname').innerHTML = players[1];
-            }
-        }
+		const getState = (socket) => {
+			socket.emit('getState', null);
+		};
 
         const start = () => {
-            timerID = setTimeout(() => {
-                updateState('start');
+			sendState('start');
+            timerID = setInterval(() => {
+                getState(socket);
             }, 33);
         };
 
         const pause = () => {
-            clearTimeout(timerID);
-            updateState('pause');
-        }
+            clearInterval(timerID);
+            sendState('pause');
+        };
 
         /**
          * bug/feature/NOT TESTED:
@@ -106,21 +101,32 @@
          */
 
         const reset = () => {
-            clearTimeout(timerID);
-            updateState('reset');
-        }
+            clearInterval(timerID);
+            sendState('reset');
+        };
 
         const stepForward = () => {
-            clearTimeout(timerID);
-            updateState('stepForward');
-        }
+            clearInterval(timerID);
+            sendState('stepForward');
+        };
 
         const stepBackward = () => {
-            clearTimeout(timerID);
-            updateState('stepBackward');
-        }
+            clearInterval(timerID);
+            sendState('stepBackward');
+        };
 
-        updateState('start');
+		socket.on('update', data => {
+			log(data);
+			updateField(data.map);
+			updatePlayers(data.players);
+			updateScore(data.score);
+		});
+
+		socket.on('endgame', winner => {
+			tempAlert({status: 200, message: winner});
+		});
+
+        sendState('load');
         document.querySelector('#start').onclick = start;
         document.querySelector('#pause').onclick = pause;
         document.querySelector('#reset').onclick = reset;

@@ -43,9 +43,19 @@ const getField = (map) => {
     } 
     let outputmap = map.map(row => {
         let data = row.split('')
-                .map(symbol => symbol === '.' ? cellTemplate : cellTemplate.replace('dot', symbol))
+                // .map(symbol => symbol === '.' ? cellTemplate : cellTemplate.replace('dot', symbol))
+                .map(symbol => {
+						if (symbol === '.') {
+							return cellTemplate;
+						} else if (symbol === 'x') {
+							return cellTemplate.replace('dot', 'xX');
+						} else if (symbol === 'o') {
+							return cellTemplate.replace('dot', 'oO');
+						} else 
+							return cellTemplate.replace('dot', symbol);
+				})
                 .join('');
         return rowTemplate.replace('data', data);
-    }).join('');
+	}).join('');
     return wrapper.replace('data', outputmap);
 };

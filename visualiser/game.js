@@ -38,7 +38,7 @@ module.exports = class Game {
 			if (this.map.length != 0) {
 				this.history.push({   map: this.map,
 								  players: this.players,
-									score: this.scores,
+									score: this.scores.slice(),
 									piece: this.piece,
 							historyLength: 0 });
 			}
