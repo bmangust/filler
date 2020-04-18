@@ -32,18 +32,17 @@ const tempAlert = (data,duration) => {
 };
 
 const getField = (map) => {
-    const cellTemplate = '<li class="cell c00 dot"></li>';
+    let cellTemplate = '<li class="cell c00 dot"></li>';
     const rowTemplate = '<ul class="row">data</ul>';
     const wrapper = '<div class="fieldWrapper">data</div>';
 
-    if (map.length == 24) {
-        cellTemplate.replace('c00', 'c01');
-    } else if (map.length > 30) {
-        cellTemplate.replace('c00', 'c02');
+    if (map.length > 20 && map.length < 50) {
+        cellTemplate = cellTemplate.replace('c00', 'c01');
+    } else if (map.length > 49) {
+        cellTemplate = cellTemplate.replace('c00', 'c02');
     } 
     let outputmap = map.map(row => {
         let data = row.split('')
-                // .map(symbol => symbol === '.' ? cellTemplate : cellTemplate.replace('dot', symbol))
                 .map(symbol => {
 						if (symbol === '.') {
 							return cellTemplate;

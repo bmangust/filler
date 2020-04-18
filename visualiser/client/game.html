@@ -1,11 +1,11 @@
-show <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="./style.css" rel="stylesheet">
-	<script src="./util.js" type="text/javascript"></script>
-	<script src="/socket.io/socket.io.js"></script>
+    <script src="./util.js" type="text/javascript"></script>
+    <script src="/socket.io/socket.io.js"></script>
     <title>Filler game</title>
 </head>
 <body>
@@ -16,22 +16,18 @@ show <!DOCTYPE html>
             <div class="infoAndControls flex">
                 <div class="score">
                     <div class="scoreWrapper">
-                        <span id="playerXname">Player 1</span>
+                        <span id="playerOname">Player 1</span>
                         <div class="playerScore">
-                            <div class="scoreBar X" id="playerX"></div>
+                            <div class="scoreBar oO" id="playerO"></div>
                         </div>
                     </div>
                     <div class="scoreWrapper">
-                        <span id="playerOname">Player 2</span>
+                        <span id="playerXname">Player 2</span>
                         <div class="playerScore">
-                            <div class="scoreBar O" id="playerO"></div>
+                            <div class="scoreBar xX" id="playerX"></div>
                         </div>
                     </div>
                 </div>
-                <!-- <div class="piece">
-                    <span>current piece</span>
-                    <div id="currentPiece"></div>
-                </div> -->
                 <div class="controlPanel">
                     <input class="button control" type="button" id="start" value="Start" />
                     <input class="button control" type="button" id="pause" value="Pause" />
@@ -41,17 +37,18 @@ show <!DOCTYPE html>
                 </div>
             </div>
         </div>
-		<br/>
-		<div>
-			<a class="button" href="http://localhost:3000">back</a>
-		</div>
+        <br/>
+        <div>
+            <a class="button" href="http://localhost:3000">back</a>
+        </div>
     </section>
     <footer>
         <span>Handcrafted by akraig</span>
     </footer>
     <script>
         let timerID;
-		const socket = io();
+        const socket = io();
+        let delay = 33;
 
         const updateField = (map) => {
             document.querySelector('#field').innerHTML = getField(map);
@@ -61,42 +58,40 @@ show <!DOCTYPE html>
             let maxLength = score[0];
             let player1width = score[1] * 100 / maxLength;
             let player2width = score[2] * 100 / maxLength;
-            document.querySelector('#playerO').style.width =  `${player1width}%`;
-            document.querySelector('#playerX').style.width =  `${player2width}%`;
-		};
+            document.querySelector('#playerO').style.width = `${player1width}%`;
+            document.querySelector('#playerX').style.width = `${player2width}%`;
+        };
 
-		const updatePlayers = (players) => {
-			if (players.length == 2) {
-				document.querySelector('#playerOname').innerHTML = players[0];
-				document.querySelector('#playerXname').innerHTML = players[1];
-			}
-		};
-		
-		const sendState = (state) => {
-			socket.emit('state', state);
-		};
+        const updatePlayers = (players) => {
+            if (players.length === 2) {
+                document.querySelector('#playerOname').innerHTML = players[0];
+                document.querySelector('#playerXname').innerHTML = players[1];
+            }
+        };
 
-		const getState = (socket) => {
-			socket.emit('getState', null);
-		};
+        const sendState = (state) => {
+            socket.emit('state', state);
+        };
+
+        const getState = (socket) => {
+            socket.emit('getState', null);
+        };
 
         const start = () => {
-			sendState('start');
+            sendState('start');
             timerID = setInterval(() => {
                 getState(socket);
-            }, 33);
+            }, delay);
         };
 
         const pause = () => {
             clearInterval(timerID);
-            sendState('pause');
         };
 
         /**
-         * bug/feature/NOT TESTED:
-         * After pressing 'RESET' UI should be able to show some further moves,
+         * After pressing 'RESET' UI will be able to show some further moves,
          * as long as history stores (with "STEP" buttons).
-         * If pressed not too fast - possibly the whole game,
+         * If pressed not too soon - possibly the whole game,
          * because VM is much faster than UI
          */
 
@@ -115,16 +110,16 @@ show <!DOCTYPE html>
             sendState('stepBackward');
         };
 
-		socket.on('update', data => {
-			log(data);
-			updateField(data.map);
-			updatePlayers(data.players);
-			updateScore(data.score);
-		});
+        socket.on('update', data => {
+            log(data);
+            updateField(data.map);
+            updatePlayers(data.players);
+            updateScore(data.score);
+        });
 
-		socket.on('endgame', winner => {
-			tempAlert({status: 200, message: winner});
-		});
+        socket.on('endgame', winner => {
+            tempAlert({status: 200, message: winner});
+        });
 
         sendState('load');
         document.querySelector('#start').onclick = start;

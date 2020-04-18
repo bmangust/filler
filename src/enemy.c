@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   enemy.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: akraig <marvin@42.fr>                      +#+  +:+       +#+        */
+/*   By: akraig <akraig@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/12 19:44:42 by akraig            #+#    #+#             */
-/*   Updated: 2020/03/12 19:44:43 by akraig           ###   ########.fr       */
+/*   Updated: 2020/04/18 17:33:07 by akraig           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@
 **	if enemy is already dead - just return 0 (not alive)
 */
 
-int		count_enemies(t_map *map)
+int			count_enemies(t_map *map)
 {
 	int i[3];
 
@@ -40,4 +40,74 @@ int		count_enemies(t_map *map)
 	else
 		map->cnt_enemies = i[2];
 	return (map->is_alive);
+}
+
+int			is_enemy(t_map *map, t_dot *dot)
+{
+	if (map->map[dot->j][dot->i] == map->enemy ||
+		map->map[dot->j][dot->i] == map->enemynew)
+		return (1);
+	return (0);
+}
+
+// static int	is_new_enemy(t_map *map, t_dot *dot)
+// {
+// 	if (map->map[dot->j][dot->i] == map->enemynew)
+// 		return (1);
+// 	return (0);
+// }
+
+/*
+**	updates enemies list, adds all enemy dots to a list
+*/
+
+void		update_enemies(t_map *map, t_dot *cur)
+{
+	int		c;
+	t_dot	*dot;
+
+	dot = NULL;
+	c = map->map[cur->j][cur->i];
+	if (is_enemy(map, cur) && !(dot = find_dot(map->enemies, cur)))
+		add_last_dot(&(map->enemies), init_dot(cur->i, cur->j, c));
+	else if (dot)
+		dot->c = c;
+}
+
+/*
+**	returns next enemy in list (amonf all on only new)
+*/
+
+t_dot		*get_next_enemy(t_map *map, t_dot *enemy, int only_new)
+{
+	t_dot	*tmp;
+
+	if (!map || !map->enemies)
+		return (NULL);
+	tmp = enemy ? enemy->next : map->enemies;
+	if (only_new)
+		while (tmp && tmp->c != map->enemynew)
+			tmp = tmp->next;
+	return (tmp);
+}
+
+/*
+**	checks if enemies list already has current dot
+**	NOT USED
+*/
+
+int 		check_enemies(t_map *map, t_dot *cur)
+{
+	t_dot *tmp;
+
+	if (!map || !map->enemies)
+		return (1);
+	tmp = map->enemies;
+	while (tmp)
+	{
+		if (tmp->i == cur->i && tmp->j == cur->j)
+			return (0);
+		tmp = tmp->next;
+	}
+	return (1);
 }

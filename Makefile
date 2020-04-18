@@ -32,7 +32,8 @@ FLAGS = -Wall -Werror -Wextra
 
 INCLUDES = -I$(INC_DIR) -I$(LIB_INC_DIR)
 
-SRC =	dots.c \
+SRC =	compare.c \
+		dots.c \
 		enemy.c \
 		error.c \
 		heatmap.c \
@@ -40,6 +41,7 @@ SRC =	dots.c \
 		map.c \
 		moves.c \
 		piece.c \
+		utils.c
 
 INC = 	filler.h
 

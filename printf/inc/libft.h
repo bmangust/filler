@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   libft.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: akraig <akraig@student.42.fr>              +#+  +:+       +#+        */
+/*   By: max <max@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/21 19:47:47 by akraig            #+#    #+#             */
-/*   Updated: 2019/10/06 17:06:31 by akraig           ###   ########.fr       */
+/*   Updated: 2020/04/18 15:45:08 by max              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,6 +103,7 @@ void					ft_lstadd(t_list **alst, t_list *new);
 void					ft_lstiter(t_list *lst, void (*f)(t_list *elem));
 t_list					*ft_lstmap(t_list *lst, t_list *(*f)(t_list *elem));
 int						ft_isspace(int c);
+int						ft_sqrt(int number);
 int64_t					ft_pow(int64_t a, int64_t b);
 int						ft_wrdcnt(char const *s, char c);
 int						ft_wordlen(const char *s, char c, int start);

@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="./style.css" rel="stylesheet">
     <script src="./util.js" type="text/javascript"></script> 
-	<script src="/socket.io/socket.io.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
     <title>Filler settings</title>
 </head>
 <body>
@@ -21,9 +21,9 @@
                 <option value="champely">champely</option>
                 <option value="grati">grati</option>
                 <option value="hcao">hcao</option>
-                <option value="hcao">lcharvol</option>
-                <option value="hcao">superjeannot</option>
-                <option value="hcao">zweng</option>
+                <option value="lcharvol">lcharvol</option>
+                <option value="superjeannot">superjeannot</option>
+                <option value="zweng">zweng</option>
             </select><br><br>
             <label class="uppercase">Player 2</label><br>
             <select type="text" name="player2">
@@ -33,9 +33,9 @@
                 <option value="champely">champely</option>
                 <option value="grati">grati</option>
                 <option value="hcao">hcao</option>
-                <option value="hcao">lcharvol</option>
-                <option value="hcao">superjeannot</option>
-                <option value="hcao">zweng</option>
+                <option value="lcharvol">lcharvol</option>
+                <option value="superjeannot">superjeannot</option>
+                <option value="zweng">zweng</option>
             </select><br><br>
             <label class="uppercase">Map size</label><br>
             <select type="text" name="map">
@@ -51,39 +51,35 @@
         <span>Handcrafted by akraig</span>
     </footer>
     <script type="text/javascript">
-		const socket = io();
+        const socket = io();
 
         document.getElementById("cancel").onclick = () => {
             location.href = "http://localhost:3000/";
         };
 
-		// document.querySelector('#submit').onclick = sendSettings();
-
         document.getElementById("submit").addEventListener("click", e => {
             e.preventDefault();
-            // получаем данные формы
             let settings = document.forms["settings"];
             let players = [];
             players.push(settings.elements["player1"].value);
             players.push(settings.elements["player2"].value);
             let map = settings.elements["map"].value;
-			// сериализуем данные в json
             let data = JSON.stringify({players: players, map: map});
-			log(data);
-            let result = postSettings(data, "/settings")
-                            .then(ok => {
-                                log(`promise resolve: ${ok.response}`);
-                                tempAlert(ok.response, 2000);
-                            })
-                            .then(
-                                setTimeout(() => {
-                                    window.location.replace('http://localhost:3000')
-                                }, 500)
-                            )
-                            .catch(error => {
-                                log(`promise reject: ${error.response}`);
-                                tempAlert(error.response, 2000);
-                            })
+            log(data);
+            postSettings(data, "/settings")
+                .then(ok => {
+                    log(`promise resolve: ${ok.response}`);
+                    tempAlert(ok.response, 2000);
+                })
+                .then(
+                    setTimeout(() => {
+                        window.location.replace('http://localhost:3000')
+                    }, 500)
+                )
+                .catch(error => {
+                    log(`promise reject: ${error.response}`);
+                    tempAlert(error.response, 2000);
+                })
         });
     </script>
 </body>

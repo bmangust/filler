@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   heatmap.c                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: akraig <akraig@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2020/04/18 16:02:00 by akraig            #+#    #+#             */
+/*   Updated: 2020/04/18 16:23:03 by akraig           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "filler.h"
 
 /*
@@ -16,16 +28,6 @@
 **	5. TODO: filling the board when the enemy is dead
 */
 
-int		get_distance(t_dot enemy, t_dot cur)
-{
-	int64_t diff[3];
-
-	diff[0] = ft_absint(enemy.i - cur.i);
-	diff[1] = ft_absint(enemy.j - cur.j);
-	diff[2] = diff[0] + diff[1];
-	return (diff[2]);
-}
-
 void	get_heatmap(t_map *map)
 {
 	int		i[2];
@@ -43,83 +45,6 @@ void	get_heatmap(t_map *map)
 				map->heatmap[i[1]][i[0]] = INT16_MAX;
 		}
 	}
-}
-
-int		is_enemy(t_map *map, t_dot *dot)
-{
-	if (map->map[dot->j][dot->i] == map->enemy ||
-		map->map[dot->j][dot->i] == map->enemynew)
-		return (1);
-	return (0);
-}
-
-int		is_new_enemy(t_map *map, t_dot *dot)
-{
-	if (map->map[dot->j][dot->i] == map->enemynew)
-		return (1);
-	return (0);
-}
-
-void	set_dot(t_dot *target, t_dot source)
-{
-	target->i = source.i;
-	target->j = source.j;
-}
-
-t_dot	*get_next_enemy(t_map *map, t_dot *enemy, int only_new)
-{
-	t_dot	*tmp;
-
-	if (!map || !map->enemies)
-		return (NULL);
-	tmp = enemy ? enemy->next : map->enemies;
-	if (only_new)
-		while (tmp && tmp->c != map->enemynew)
-			tmp = tmp->next;
-	return (tmp);
-}
-
-/*
-**	checks if enemies list already has current dot
-*/
-
-int 	check_enemies(t_map *map, t_dot *cur)
-{
-	t_dot *tmp;
-
-	if (!map || !map->enemies)
-		return (1);
-	tmp = map->enemies;
-	while (tmp)
-	{
-		if (tmp->i == cur->i && tmp->j == cur->j)
-			return (0);
-		tmp = tmp->next;
-	}
-	return (1);
-}
-
-
-void	reset_heatmap(t_map *map, t_dot *cur)
-{
-	map->heatmap[cur->j][cur->i] = INT16_MAX;
-}
-
-/*
-**	updates enemies list, adds all enemy dots to a list
-*/
-
-void	update_enemies(t_map *map, t_dot *cur)
-{
-	int		c;
-	t_dot	*dot;
-
-	dot = NULL;
-	c = map->map[cur->j][cur->i];
-	if (is_enemy(map, cur) && !(dot = find_dot(map->enemies, cur)))
-		add_last_dot(&(map->enemies), init_dot(cur->i, cur->j, c));
-	else if (dot)
-		dot->c = c;
 }
 
 void	calculate_heat(t_map *map, t_dot *cur)
@@ -147,6 +72,11 @@ void	calculate_heat(t_map *map, t_dot *cur)
 	map->heatmap[cur->j][cur->i] = cur->heat_max;
 }
 
+/*
+**	calculates heat based only on new enemies
+**	-------------not used now----------------
+*/
+
 void	calculate_heat_new(t_map *map, t_dot *cur)
 {
 	t_dot	*enemy;
@@ -156,7 +86,7 @@ void	calculate_heat_new(t_map *map, t_dot *cur)
 		map->heatmap[cur->j][cur->i] = 0;
 		return ;
 	}
-	else if (is_new_enemy(map, cur))
+	else if (is_enemy(map, cur))
 	{
 		map->heatmap[cur->j][cur->i] = 999;
 		return ;
@@ -172,40 +102,8 @@ void	calculate_heat_new(t_map *map, t_dot *cur)
 	map->heatmap[cur->j][cur->i] = cur->heat_max;
 }
 
-void 	replace_lowercase_c(t_map *map, t_dot *cur)
-{
-	if (map->map[cur->j][cur->i] == ft_tolower(map->c))
-		map->map[cur->j][cur->i] = map->c;
-}
-
-void	map_a_map(t_map *map, void f(t_map*, t_dot*))
-{
-	t_dot	*cur;
-
-	cur = init_dot(-1, -1, 0);
-	if (!map || !map->map)
-		return ;
-	while (++cur->j < map->height)
-	{
-		cur->i = -1;
-		while (++cur->i < map->width)
-			f(map, cur);
-	}
-	free(cur);
-}
-
-void	print_array(t_map *map, t_dot *cur)
-{
-	int **arr;
-
-	arr = map->heatmap;
-	ft_fprintf(2, "%- 5d", arr[cur->j][cur->i]);
-	if (cur->i == map->width - 1)
-		ft_fprintf(2, "\n");
-}
-
 /*
-**	goes through all dots in a map and
+**	calculates distance from enemy for every point on a map
 */
 
 void	calculate_heatmap(t_map *map)
@@ -214,5 +112,27 @@ void	calculate_heatmap(t_map *map)
 		get_heatmap(map);
 	map_a_map(map, &update_enemies);
 	map_a_map(map, &calculate_heat);
-//	map_a_map(map, &print_array);
+	// map_a_map(map, &print_array);
+}
+/*
+**	caclulate summary heat for selected position,
+**	heap is stored in selected position
+*/
+
+int		get_heat(t_map *map, t_piece *p, t_dot dot)
+{
+	t_dot	*pcur;
+
+	if (!map->heatmap)
+		return (0);
+	pcur = init_dot(-1, -1, 0);
+	dot.heat = 0;
+	while (++pcur->j < p->height)
+	{
+		pcur->i = -1;
+		while (++pcur->i < p->width)
+			if (p->map[pcur->j][pcur->i] == '*')
+				dot.heat += map->heatmap[dot.j + pcur->j][dot.i + pcur->i];
+	}
+	return (dot.heat);
 }

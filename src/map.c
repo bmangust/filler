@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   map.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: akraig <marvin@42.fr>                      +#+  +:+       +#+        */
+/*   By: akraig <akraig@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/12 19:45:48 by akraig            #+#    #+#             */
-/*   Updated: 2020/03/12 19:45:50 by akraig           ###   ########.fr       */
+/*   Updated: 2020/04/18 16:22:09 by akraig           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,6 @@ t_map 	*init_map(void)
 	map->heatmap = NULL;
 	map->enemies = NULL;
 	map->placeable = NULL;
-	map->candidates = NULL;
 	return (map);
 }
 
@@ -98,6 +97,7 @@ int 	free_map(t_map **map)
 		return (0);
 	clear_map(*map);
 	clear_dots(&((*map)->enemies));
+	clear_dots(&((*map)->placeable));
 	free(*map);
 	*map = NULL;
 	return (0);

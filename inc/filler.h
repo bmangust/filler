@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   filler.h                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: max <max@student.42.fr>                    +#+  +:+       +#+        */
+/*   By: akraig <akraig@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2020/03/21 23:42:45 by max               #+#    #+#             */
-/*   Updated: 2020/04/12 16:12:51 by max              ###   ########.fr       */
+/*   Created: 2020/03/12 19:45:02 by akraig            #+#    #+#             */
+/*   Updated: 2020/04/18 17:37:29 by akraig           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,7 +68,7 @@ typedef struct		s_map
 	int 			**heatmap;
 	t_dot			*enemies;
 	t_dot			*placeable;
-	t_dot			***candidates;
+	// t_dot			***candidates;
 }					t_map;
 
 
@@ -90,19 +90,27 @@ void				delete_piece(t_piece **p);
 int					get_piece(t_piece *p);
 void				get_pieces_params(t_piece *p);
 int					next_move(t_map *map);
+int					safe_play(t_map *map);
 void				process_map(t_map *map, t_piece *p);
 void				get_candidates(t_map *map, t_piece *p, t_dot *best);
 t_dot				*choose_candidate(t_dot *dots, t_map *map, int comp(t_dot, t_dot, t_map));
 int					is_placeable(t_dot *coord, t_map *map, t_piece *p);
+int					is_closer_to_ceneter(t_dot dot, t_dot best, t_map map);
+int					is_lower_heat(t_dot dot, t_dot best, t_map map);
 t_dot				*find_dot(t_dot *head, t_dot *dot);
-void				get_array_of_candidates(t_map *map);
 void				calculate_heatmap(t_map *map);
 void				get_heatmap(t_map *map);
+int					get_heat(t_map *map, t_piece *p, t_dot dot);
 void				map_a_map(t_map *map, void f(t_map*, t_dot*));
 void				reset_heatmap(t_map *map, t_dot *cur);
 void				replace_lowercase_c(t_map *map, t_dot *cur);
 int					count_enemies(t_map *map);
-void				safe_play(t_map *map);
+int					is_enemy(t_map *map, t_dot *dot);
+t_dot				*get_next_enemy(t_map *map, t_dot *enemy, int only_new);
+void				update_enemies(t_map *map, t_dot *cur);
+int 				check_enemies(t_map *map, t_dot *cur);
+
+int					get_distance(t_dot enemy, t_dot cur);
 
 
 void				map_dots(t_dot *dot, void f(t_dot d));

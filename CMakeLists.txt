@@ -99,11 +99,14 @@ add_executable(filler
         printf/src/ft_wordlen.c
         printf/src/ft_wrdcnt.c
         printf/src/get_next_line.c
+        src/compare.c
         src/dots.c
+        src/dots2.c
         src/enemy.c
         src/error.c
         src/heatmap.c
         src/main.c
         src/map.c
         src/moves.c
-        src/piece.c)
+        src/piece.c
+        src/utils.c)
