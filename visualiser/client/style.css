@@ -72,6 +72,7 @@ ul {
 
 .button {
     display: inline-block;
+    outline: none;
     text-decoration: none;
     text-transform: uppercase;
     color: #fafafa;
@@ -88,7 +89,7 @@ ul {
 .button:hover {
     background-color: #2a2a2a;
     border: 1px solid #6d6d6d;
-    color: #bb86fc;
+    color: #7E57C2;
     transition: 0.6s;
 }
 
@@ -139,22 +140,15 @@ select, select>* {
 
 .cell {
     background-color: #444;
-    margin: 1px;
+    margin: 0.5px;
     display: block;
-}
-
-.c00 {
-    min-height: 10px;
-    min-width: 10px;
-    max-width: 30px;
-    max-height: 30px;
+    min-height: 25px;
+    min-width: 25px;
 }
 
 .c01 {
-    min-height: 10px;
-    min-width: 10px;
-    max-width: 20px;
-    max-height: 20px;
+    min-height: 15px;
+    min-width: 15px;
 }
 
 .c02 {
@@ -165,26 +159,34 @@ select, select>* {
 }
 
 .X {
-    background-color: #4A148C;
+    background-color: #FB8C00;
 }
 
 .xX {
-    background-color: #6A1B9A;
+    background-color: #FFA726;
 }
 
 .O {
-    background-color: #004D40;
+    background-color: #4527A0;
 }
 
 .oO {
-    background-color: #00695C;
+    background-color: #7E57C2;
 }
+
+#playerONameResults {
+    color: #4527A0;
+}
+
+#playerXNameResults {
+    color: #FB8C00;
+}
+
 
 #field {
     /* width: 40vw;
     height: 40vw; */
-    max-height: 70vh;
-    /* flex: 4 1 50%; */
+    /*max-height: 70vh;*/
     color: #1a1a1a;
 }
 
@@ -196,6 +198,11 @@ select, select>* {
     /* height: 100%; */
 }
 
+.flexGame {
+    flex-direction: row;
+    justify-content: space-around;
+}
+
 .infoAndControls {
     width: 25vw;
     /* flex: 1 4 300px; */
@@ -203,20 +210,36 @@ select, select>* {
 }
 
 .controlPanel {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
+    flex-direction: column;;
 }
 
-.control {
-    margin-right: 10px;
-    margin-left: 10px;
+@media screen and (max-width: 900px) {
+    .flexGame {
+        flex-direction: column;
+    }
+
+    .button {
+        width: 7rem;
+    }
+
+    .buttonStep {
+        width: 10rem;
+    }
+
+    .controlPanel {
+        flex-direction: row;
+    }
+
+    .control {
+        margin-right: 10px;
+        margin-left: 10px;
+    }
 }
 
 .playerScore {
     width: 100%;
     margin: 3px 0;
-    background-color:                                   #444;
+    background-color: #444;
 }
 
 .scoreWrapper {
@@ -233,13 +256,97 @@ select, select>* {
 }
 
 #playerX {
-    width: 0%;
+    width: 0;
     height: 1rem;
 }
 
 #playerO {
-    width: 0%;
+    width: 0;
     height: 1rem;
+}
+
+#sliderWrapper {
+    display: none;
+    margin: 1rem;
+}
+
+.slider {
+    -webkit-appearance: none;
+    outline: none;
+    width: 90%;
+    background: #4527A0;
+    height: 2px;
+    margin: 40px auto 0;
+    opacity: 0.7;
+}
+
+.slider:hover {
+    opacity: 1;
+}
+
+.slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    background: #4527A0;
+    cursor: pointer;
+    display: inline-block;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    transition: 0.5s;
+}
+
+/*.slider::-webkit-slider-thumb:hover {*/
+/*    -webkit-appearance: none;*/
+/*    background: white;*/
+/*    border: 6px solid #3f51b5;*/
+/*    cursor: pointer;*/
+/*    display: inline-block;*/
+/*    width: 40px;*/
+/*    height: 40px;*/
+/*    -moz-border-radius: 50%;*/
+/*    -webkit-border-radius: 50%;*/
+/*    border-radius: 50%;*/
+/*    transition: 0.5s;*/
+/*}*/
+
+/* winner alert */
+
+#dimmer {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100vw;
+    height: 100vw;
+    background-color: rgba(0,0,0,0.4);
+    display: none
+}
+
+#results {
+    position: absolute;
+    width: 20rem;
+    top: 40%;
+    left: 50%;
+    margin-left: -10rem;
+    padding: 2rem 2rem 3rem;
+    border: 1px solid #444;
+    border-radius: 7px;
+    background-color: #2a2a2a;
+    display: none
+}
+
+#results > * span {
+    font-size: 1.3rem;
+    padding: 0 5px;
+    font-weight: bold;
+}
+
+h3 {
+    text-transform: uppercase;
+}
+
+#winner {
+    text-transform: uppercase;
 }
 
 /* about */

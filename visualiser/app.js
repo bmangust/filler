@@ -3,23 +3,43 @@ const readline = require("readline");
 const app = express();
 const http = require('http').createServer(app);
 const io = require('socket.io')(http);
-const {log} = require('./client/util');
+const clients = new Map();
+const {log} = require('./util');
+const jsonParser = express.json();
 const resourcepath = '../resources';
 let currentState = 'reset';         //states: reset, start, pause, load
 let historyIndex = 0;               //index to get history state
 let settings = { players: [ 'akraig', 'akraig' ], map: 'map00' };
-const { exec } = require('child_process');
+const { spawn } = require('child_process');
+// const fillervm = () => {
+//     exec(`${resourcepath}/filler_vm -f ${resourcepath}/maps/${settings.map} -p1 ${resourcepath}/players/${settings.players[0]}.filler -p2 ${resourcepath}/players/${settings.players[1]}.filler &>&1`, (error, stdout, stderr) => {
+//                         if (error) {
+//                             log(`exec error: ${error}`);
+//                             return;
+//                         }
+//                         game.processInput(stdout);
+//                         log(stdout);
+//                         log(`stderr:\n${stderr}`);
+//                     });
+// };
+
 const fillervm = () => {
-    exec(`${resourcepath}/filler_vm -f ${resourcepath}/maps/${settings.map} -p1 ${resourcepath}/players/${settings.players[0]}.filler -p2 ${resourcepath}/players/${settings.players[1]}.filler &>&1`, (error, stdout, stderr) => {
-                        if (error) {
-                            log(`exec error: ${error}`);
-                            return;
-                        }
-                        game.processInput(stdout);
-                        log(stdout);
-                        log(`stderr: ${stderr}`);
-                    });
+    const filler = spawn(`${resourcepath}/filler_vm`, [`-f`, `${resourcepath}/maps/${settings.map}`, `-p1`, `${resourcepath}/players/${settings.players[0]}.filler`, `-p2`, `${resourcepath}/players/${settings.players[1]}.filler`, `*>&1`]);
+
+    filler.stdout.on('data', chunk => {
+        // log(chunk.toString());
+        game.processInput(chunk.toString());
+    });
+
+    filler.stderr.on('data', chunk => {
+        log(`stderr: ${chunk.toString()}`);
+    });
+
+    filler.on('close', (code) => {
+        console.log(`child process exited with code ${code}`);
+    });
 };
+
 
 const path = `${__dirname}/client`;
 const rl = readline.createInterface({
@@ -50,10 +70,6 @@ app.get("/", function(request, response){
  */
 
 app.get("/game", function(request, response){
-    if (game === null) {
-        game = new Game(settings);
-        currentState = 'start';
-    }
     response.sendFile(__dirname + "/client/game.html");
 });
 
@@ -66,32 +82,31 @@ app.get("/about", function(request, response){
 });
 
 io.on('connection', (socket) => {
-    log('new connection');
-    socket.on('disconnect', () => {
-        game = null;
-    });
+    log(`new connection: ${socket.id}`);
+    clients.set(socket.id, socket);
     socket.on('state', state => {
         if (state === 'load') {
-            game = new Game(settings);
-            historyIndex = 0;
+            newGame();
             socket.emit('update', getCurrentHistory());
         } else if (state === 'start') {
-            // currentState = state;
+            if (currentState === 'endgame') {
+                newGame();
+            }
+            currentState = state;
             fillervm();
-        // } else if (state === 'pause') {
-            // currentState = state;
+        } else if (state === 'pause') {
+            currentState = currentState === 'endgame' ? 'endgame' : 'pause';
         } else if (state === 'reset') {
-            // currentState = state;
-            game = new Game(settings);
-            historyIndex = 0;
+            currentState = state;
+            newGame();
             socket.emit('update', getCurrentHistory());
         } else if (state === 'stepForward') {
-            // currentState = 'pause';
+            currentState = currentState === 'endgame' ? 'endgame' : 'pause';
             if (game) {
-                socket.emit('update', getNextHistory());
+                socket.emit('update', getNextHistory(socket));
             }
         } else if (state === 'stepBackward') {
-            // currentState = 'pause';
+            currentState = currentState === 'endgame' ? 'endgame' : 'pause';
             if (game) {
                 socket.emit('update', getPrevHistory());
             }
@@ -99,34 +114,50 @@ io.on('connection', (socket) => {
     });
     socket.on('getState', () => {
         if (game) {
-            socket.emit('update', getNextHistory());
+            socket.emit('update', getNextHistory(socket));
         }
     });
     socket.on('settings', data => {
-        settings = data;
-    })
+        if (data.players && data.map) {
+            settings = data;
+            socket.emit('ack', {status:200, message: 'Saved'});
+        } else {
+            socket.emit('ack', {status:404, message: 'Not received settings'});
+        }
+    });
+    socket.on('getHistory', number => {
+        socket.emit('update', game.getHistory(number));
+    });
 });
 
-// app.post("/settings", jsonParser, function (request, response) {
-//     log(`/settings request body: ${JSON.stringify(request.body)}`);
-//     if(!request.body) return response.json({ status:400,message:'Error' });
-//     response.json({ status:202,message:'Saved' });
-//     // log(`Settings before update: ${JSON.stringify(settings)}`);
-//     settings = request.body;
-//     log(`Settings after update: ${JSON.stringify(settings)}`);
-// });
+io.on('disconnect', (socket) => {
+    log(`disconnected: ${socket.id}`);
+    clients.delete(socket.id);
+    game = null;
+});
+
+const newGame = () => {
+    game = new Game(settings);
+    historyIndex = 0;
+}
 
 const getCurrentHistory = () => {
     return game.getHistory(historyIndex);
 };
 
-const getNextHistory = () => {
+const getNextHistory = (socket) => {
     let current = game.getHistory(historyIndex);
     historyIndex++;
-    if (historyIndex >= current.historyLength) {
+    if (historyIndex > current.historyLength) {
+        current.finalScore = game.getFinalScore();
+        if (current.finalScore && currentState !== 'endgame') {
+            currentState = 'endgame';
+            socket.emit('endgame', current);
+            return current;
+        }
         historyIndex = current.historyLength - 1;
     }
-    // log(`getNextHistory. Current: ${current}, historyIndex: ${historyIndex}`);
+    // log(current);
     return current;
 };
 
@@ -151,24 +182,34 @@ const getProperties = (obj) => {
 
 const getGameProperty = (input) => {
     let parameter = input.split(' ')[2];
+    let index = +input.split(' ')[3];
     if (parameter === 'help') {
         log(getProperties(game));
         return;
     }
-    log(game[parameter]);
+    if (index)
+        log(game[parameter[index]]);
+    else
+        log(game[parameter]);
 };
 
 const getProperty = (input) => {
     let parameter = input.split(' ')[1];
     if (parameter === 'help') {
         log([`currentState`, `historyIndex`, `settings`, `game`].join('\n'));
-        return;
+    } else if (parameter === 'currentState') {
+        log(currentState);
+    } else if (parameter === 'historyIndex') {
+        log(historyIndex);
+    } else if (parameter === 'settings') {
+        log(settings);
+    } else if (parameter === 'game') {
+        log(game);
     }
-    log(parameter);
 };
 
 rl.on('line', (input) => {
-    if (input.startsWith('get game ')) {
+    if (input.startsWith('get game ') && game) {
         getGameProperty(input);
     } else if (input.startsWith('get ')) {
         getProperty(input);

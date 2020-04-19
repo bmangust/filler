@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="./style.css" rel="stylesheet">
+    <script src="./util.js" type="text/javascript"></script>
     <title>Filler about</title>
 </head>
 <body>
@@ -81,15 +82,15 @@
     </footer>
     <script>
         const replaceLogo = () => {
-            document.querySelector('.socketLogo').style.display = 'none';
-            document.querySelector('.socketName').style.display = 'inline';
+            $('.socketLogo').style.display = 'none';
+            $('.socketName').style.display = 'inline';
         };
         const replaceName = () => {
-            document.querySelector('.socketLogo').style.display = 'inline';
-            document.querySelector('.socketName').style.display = 'none';
+            $('.socketLogo').style.display = 'inline';
+            $('.socketName').style.display = 'none';
         };
-        document.querySelector('.socketLogo').onmouseenter = replaceLogo;
-        document.querySelector('.socketName').onmouseleave = replaceName;
+        $('.socketLogo').onmouseenter = replaceLogo;
+        $('.socketName').onmouseleave = replaceName;
     </script>
 </body>
 </html>

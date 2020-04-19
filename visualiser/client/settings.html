@@ -44,7 +44,7 @@
                 <option value="map02">big</option>
             </select><br><br>
             <input class="button" type="button" id="cancel" value="Cancel" />
-            <input class="button" type="submit" id="submit" value="Save" />
+            <input class="button" type="button" id="submit" value="Save" />
         </form>
     </section>
     <footer>
@@ -53,34 +53,57 @@
     <script type="text/javascript">
         const socket = io();
 
-        document.getElementById("cancel").onclick = () => {
+        $("#cancel").onclick = () => {
             location.href = "http://localhost:3000/";
         };
 
-        document.getElementById("submit").addEventListener("click", e => {
-            e.preventDefault();
+        const sendSettings = () => {
             let settings = document.forms["settings"];
             let players = [];
             players.push(settings.elements["player1"].value);
             players.push(settings.elements["player2"].value);
             let map = settings.elements["map"].value;
-            let data = JSON.stringify({players: players, map: map});
-            log(data);
-            postSettings(data, "/settings")
-                .then(ok => {
-                    log(`promise resolve: ${ok.response}`);
-                    tempAlert(ok.response, 2000);
-                })
-                .then(
-                    setTimeout(() => {
-                        window.location.replace('http://localhost:3000')
-                    }, 500)
-                )
-                .catch(error => {
-                    log(`promise reject: ${error.response}`);
-                    tempAlert(error.response, 2000);
-                })
-        });
+            let data = {players: players, map: map};
+            socket.emit('settings', data);
+            socket.on('ack', (response) => {
+               if (response.status < 400) {
+                   tempAlert(response, 2000);
+                   setTimeout(() => {
+                       window.location.replace('http://localhost:3000');
+                   }, 2000);
+               } else {
+                   log(response.message);
+                   tempAlert(response, 2000);
+               }
+            });
+        };
+
+        $("#submit").onclick = sendSettings;
+
+        // document.getElementById("submit").addEventListener("click", e => {
+        //     e.preventDefault();
+        //     let settings = document.forms["settings"];
+        //     let players = [];
+        //     players.push(settings.elements["player1"].value);
+        //     players.push(settings.elements["player2"].value);
+        //     let map = settings.elements["map"].value;
+        //     let data = JSON.stringify({players: players, map: map});
+        //     log(data);
+        //     postSettings(data, "/settings")
+        //         .then(ok => {
+        //             log(`promise resolve: ${ok.response}`);
+        //             tempAlert(ok.response, 2000);
+        //         })
+        //         .then(
+        //             setTimeout(() => {
+        //                 window.location.replace('http://localhost:3000');
+        //             }, 2000)
+        //         )
+        //         .catch(error => {
+        //             log(`promise reject: ${error.response}`);
+        //             tempAlert(error.response, 2000);
+        //         })
+        // });
     </script>
 </body>
 </html>

@@ -1,4 +1,4 @@
-const {log} = require('./client/util');
+const {log} = require('./util');
 
 module.exports = class Game {
     width;
@@ -11,7 +11,9 @@ module.exports = class Game {
     history;
     players;
     mapSize;
-    scores;
+    scores;         //score from field count
+    fillerScore;    //score from vm output
+    isFinished;
 
     constructor (settings) {
         this.width = 0;
@@ -19,31 +21,25 @@ module.exports = class Game {
         this.state = 'idle';
         this.pieceWidth = 0;
         this.pieceHeight = 0;
+        this.isFinished = false;
         this.piece = [];
         this.history = [];
         this.players = settings.players;
         this.mapSize = settings.map;
         this.scores = [0, 0, 0];		//[max, p1, p2]
+        this.fillerScore = [0,0];
         this._initMap();
     }
 
     processInput(input) {
         let lines = input.split('\n');
-        log(lines.length);
         lines.forEach(line => {
-
             if (this.state === 'readingMap') {
-                this.readMap(line);
+                this._readMap(line);
             } if (this.state === 'readingPiece') {
-                this.readPiece(line);
+                this._readPiece(line);
             } if (line.startsWith('Plateau')) {
-                if (this.map.length !== 0) {
-                    this.history.push({   map: this.map,
-                                    players: this.players,
-                                        score: this.scores.slice(),
-                                        piece: this.piece,
-                                historyLength: 0 });
-                }
+                this._addHistory();
                 this.map = [];
                 this.height = +line.split(' ')[1];
                 this.width = +line.split(' ')[2].slice(0, -1);
@@ -51,12 +47,21 @@ module.exports = class Game {
             } if (line.startsWith('Piece')) {
                 this.piece = [];
                 this.pieceHeight = +line.split(' ')[1];
-                this.pieceWidth = +line.split(' ')[2]
-                                        .slice(0, -1);
-                // log(`ph: ${this.pieceHeight}, pw: ${this.pieceWidth}`);
+                this.pieceWidth = +line.split(' ')[2].slice(0, -1);
                 this.state = 'readingPiece';
+            } if (line.startsWith('== ')) {
+                this._readScore(line);
             }
         });
+    }
+
+    _addHistory() {
+        if (this.map.length !== 0) {
+            this.history.push({   map: this.map,
+                              players: this.players,
+                                score: this.scores.slice(),
+                                piece: this.piece   });
+        }
     }
 
     _getRowScore(row, char) {
@@ -70,7 +75,7 @@ module.exports = class Game {
      * stores results in array 'scores'
      */
 
-    getScores() {
+    _getScores() {
         this.scores[1] = this.map.reduce((sum, currentRow) => {
             // log(`sum: ${sum}, currentRow: ${currentRow}`);
             // log(this._getRowScore(currentRow, 'o'));
@@ -87,25 +92,34 @@ module.exports = class Game {
      * controls map height based on this.height (taken from string 'Plateau h w:')
      */
 
-    readMap(input) {
+    _readMap(input) {
         if (this.map.length < this.height) {
             let row = input.split(' ')[1];
-            if (row.length === this.width) {
-                this.map.push(input.split(' ')[1]);
+            if (row && row.length === this.width) {
+                this.map.push(row);
             }
         } else {
             this.state = 'idle';
-            this.getScores();
+            this._getScores();
         }
     }
 
-    readPiece(input) {
+    _readPiece(input) {
         if (this.piece.length < this.pieceHeight) {
             this.piece.push(input);
         } else {
             this.state = 'idle';
-            this.getScores();
         }
+    }
+
+    _readScore(line) {
+        if (line.startsWith('== O')) {
+            this.fillerScore[0] = +line.split(' ')[3];
+        } else if (line.startsWith('== X')) {
+            this.fillerScore[1] = +line.split(' ')[3];
+        }
+        this.isFinished = true;
+        this._addHistory();
     }
 
     _initMap() {
@@ -144,8 +158,34 @@ module.exports = class Game {
         } else if (index < 0) {
             index = 0;
         }
+        // log(`index: ${index}`);
         let current = this.history[index];
         current.historyLength = this.history.length;
+        // log(current);
         return current;
+    }
+
+    /**
+     * return object with data about scores and winner
+     * @returns {{score: Array, winner: string, players: Array}}
+     */
+
+    getFinalScore() {
+        if (this.isFinished) {
+            let winner;
+            if (this.scores[1] > this.scores[2]) {
+                winner = this.players[0];
+            } else if (this.scores[1] < this.scores[2]) {
+                winner = this.players[1];
+            } else {
+                winner = 'draw';
+            }
+            const data = {
+                winner: winner,
+                players: this.players,
+                score: this.fillerScore
+            };
+            return data;
+        }
     }
 };

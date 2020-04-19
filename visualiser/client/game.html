@@ -18,23 +18,41 @@
                     <div class="scoreWrapper">
                         <span id="playerOname">Player 1</span>
                         <div class="playerScore">
-                            <div class="scoreBar oO" id="playerO"></div>
+                            <div class="scoreBar O" id="playerO"></div>
                         </div>
                     </div>
                     <div class="scoreWrapper">
                         <span id="playerXname">Player 2</span>
                         <div class="playerScore">
-                            <div class="scoreBar xX" id="playerX"></div>
+                            <div class="scoreBar X" id="playerX"></div>
                         </div>
                     </div>
                 </div>
-                <div class="controlPanel">
+                <div class="flex controlPanel">
                     <input class="button control" type="button" id="start" value="Start" />
                     <input class="button control" type="button" id="pause" value="Pause" />
                     <input class="button control" type="button" id="reset" value="Reset" />
-                    <input class="button control" type="button" id="stepForward" value="Step forward" />
-                    <input class="button control" type="button" id="stepBackward" value="Step backward" />
+                    <input class="button control buttonStep" type="button" id="stepForward" value="Step forward" />
+                    <input class="button control buttonStep" type="button" id="stepBackward" value="Step backward" />
                 </div>
+            </div>
+        </div>
+        <div id="sliderWrapper">
+            <h3 class="uppercase">History slider</h3>
+            <input type="range" min="0" max="100" value="50" class="slider" id="slider">
+        </div>
+        <div id="dimmer"></div>
+        <div id="results">
+            <div class="playerWrapper">
+                <h3>winner</h3>
+                <h2 id="winner">player1</h2>
+            </div>
+            <div>
+                <span id="playerONameResults">player1</span>
+                <span id="playerOScore">214</span>
+                <span>:</span>
+                <span id="playerXScore">121</span>
+                <span id="playerXNameResults">player2</span>
             </div>
         </div>
         <br/>
@@ -49,28 +67,32 @@
         let timerID;
         const socket = io();
         let delay = 33;
+        let counter = 0;
+        let slider = null;
+        let state = 'reset';
 
         const updateField = (map) => {
-            document.querySelector('#field').innerHTML = getField(map);
+            $('#field').innerHTML = getField(map);
         };
         
         const updateScore = (score) => {
             let maxLength = score[0];
             let player1width = score[1] * 100 / maxLength;
             let player2width = score[2] * 100 / maxLength;
-            document.querySelector('#playerO').style.width = `${player1width}%`;
-            document.querySelector('#playerX').style.width = `${player2width}%`;
+            $('#playerO').style.width = `${player1width}%`;
+            $('#playerX').style.width = `${player2width}%`;
         };
 
         const updatePlayers = (players) => {
             if (players.length === 2) {
-                document.querySelector('#playerOname').innerHTML = players[0];
-                document.querySelector('#playerXname').innerHTML = players[1];
+                $('#playerOname').innerHTML = players[0];
+                $('#playerXname').innerHTML = players[1];
             }
         };
 
-        const sendState = (state) => {
-            socket.emit('state', state);
+        const sendState = (stateString) => {
+            state = stateString;
+            socket.emit('state', stateString);
         };
 
         const getState = (socket) => {
@@ -78,55 +100,107 @@
         };
 
         const start = () => {
-            sendState('start');
-            timerID = setInterval(() => {
-                getState(socket);
-            }, delay);
+            if (!timerID) {
+                if (state === 'load' || state === 'reset' || state === 'endgame') {
+                    hideSliderAndScore();
+                    sendState('start');
+                }
+                timerID = setInterval(() => {
+                    getState(socket);
+                    counter++;
+                }, delay);
+            }
         };
 
         const pause = () => {
             clearInterval(timerID);
+            timerID = null;
         };
 
-        /**
-         * After pressing 'RESET' UI will be able to show some further moves,
-         * as long as history stores (with "STEP" buttons).
-         * If pressed not too soon - possibly the whole game,
-         * because VM is much faster than UI
-         */
-
         const reset = () => {
+            hideSliderAndScore();
             clearInterval(timerID);
+            timerID = null;
             sendState('reset');
+            counter = 0;
         };
 
         const stepForward = () => {
             clearInterval(timerID);
+            timerID = null;
             sendState('stepForward');
+            counter++;
         };
 
         const stepBackward = () => {
             clearInterval(timerID);
+            timerID = null;
             sendState('stepBackward');
+            counter--;
+        };
+
+        const hideSliderAndScore = () => {
+            $('#sliderWrapper').style.display = 'none';
+            const results = $('#results').style;
+            results.display = 'none';
+            results.left = '50%';
+            results.margin = '-10rem';
+            results.position = 'absolute';
+        };
+
+        const showSlider = (max) => {
+            $('#sliderWrapper').style.display = 'block';
+            slider = $("#slider");
+            slider.max = max;
+            slider.value = max;
+            slider.oninput = function() {
+                socket.emit('getHistory', this.value);
+            };
         };
 
         socket.on('update', data => {
             log(data);
+            log(`current iteration: ${counter}`);
             updateField(data.map);
             updatePlayers(data.players);
             updateScore(data.score);
         });
 
-        socket.on('endgame', winner => {
-            tempAlert({status: 200, message: winner});
+        const showScore = (data) => {
+            const winner = data.finalScore;
+            $('#dimmer').style.display = 'block';
+            $('#results').style.display = 'block';
+            $('#winner').innerHTML = winner.winner;
+            $('#playerONameResults').innerHTML = winner.players[0];
+            $('#playerXNameResults').innerHTML = winner.players[1];
+            $('#playerOScore').innerHTML = data.score[1];
+            $('#playerXScore').innerHTML = data.score[2];
+            setTimeout(() => {
+                $('#dimmer').style.display = 'none';
+                const results = $('#results').style;
+                results.position = 'relative';
+                results.left = '0';
+                results.margin = '10px auto';
+                showSlider(data.historyLength);
+            }, 2000);
+        }
+
+        socket.on('endgame', data => {
+            clearInterval(timerID);
+            timerID = null;
+            state = 'endgame';
+            updateField(data.map);
+            updatePlayers(data.players);
+            updateScore(data.score);
+            showScore(data);
         });
 
         sendState('load');
-        document.querySelector('#start').onclick = start;
-        document.querySelector('#pause').onclick = pause;
-        document.querySelector('#reset').onclick = reset;
-        document.querySelector('#stepForward').onclick = stepForward;
-        document.querySelector('#stepBackward').onclick = stepBackward;
+        $('#start').onclick = start;
+        $('#pause').onclick = pause;
+        $('#reset').onclick = reset;
+        $('#stepForward').onclick = stepForward;
+        $('#stepBackward').onclick = stepBackward;
     </script>
 </body>
 </html>
