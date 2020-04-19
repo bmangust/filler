@@ -126,7 +126,9 @@ io.on('connection', (socket) => {
         }
     });
     socket.on('getHistory', number => {
-        socket.emit('update', game.getHistory(number));
+        if (game) {
+            socket.emit('update', game.getHistory(number));
+        }
     });
 });
 
