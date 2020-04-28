@@ -14,6 +14,7 @@ module.exports = class Game {
     scores;         //score from field count
     fillerScore;    //score from vm output
     isFinished;
+    buffer;
 
     constructor (settings) {
         this.width = 0;
@@ -22,6 +23,7 @@ module.exports = class Game {
         this.pieceWidth = 0;
         this.pieceHeight = 0;
         this.isFinished = false;
+        this.buffer = '';
         this.piece = [];
         this.history = [];
         this.players = settings.players;
@@ -93,14 +95,23 @@ module.exports = class Game {
      */
 
     _readMap(input) {
-        if (this.map.length < this.height) {
-            let row = input.split(' ')[1];
-            if (row && row.length === this.width) {
-                this.map.push(row);
-            }
-        } else {
+        if (input.startsWith('Piece')) {
             this.state = 'idle';
             this._getScores();
+            return;
+        }
+        if (input.length < this.width + 4) {
+            this.buffer += input;
+            if (this.buffer.length === this.width + 4) {
+                input = this.buffer.slice();
+                this.buffer = '';
+            } else {
+                return;
+            }
+        }
+        let row = input.split(' ')[1];
+        if (row && row.length === this.width) {
+            this.map.push(row);
         }
     }
 

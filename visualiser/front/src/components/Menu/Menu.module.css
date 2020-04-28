@@ -1,0 +1,8 @@
+.infoAndControls {
+  width: 25vw;
+  flex-direction: column;
+}
+
+.controlPanel {
+  flex-direction: column;
+}

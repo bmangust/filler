@@ -1,0 +1,28 @@
+.flexGame {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+}
+
+@media screen and (max-width: 900px) {
+  .flexGame {
+    flex-direction: column;
+  }
+
+  button {
+    width: 7rem;
+  }
+
+  .buttonStep {
+    width: 10rem;
+  }
+
+  .controlPanel {
+    flex-direction: row;
+  }
+
+  .control {
+    margin-right: 10px;
+    margin-left: 10px;
+  }
+}

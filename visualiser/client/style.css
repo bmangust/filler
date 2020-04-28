@@ -1,299 +1,297 @@
-
-@import url('https://fonts.googleapis.com/css2?family=Montserrat&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Montserrat&display=swap");
 
 /* general style */
 
 * {
-    margin: 0;
-    padding: 0;
-    font-family: 'Montserrat', sans-serif;
-    color: #fafafa;
+  margin: 0;
+  padding: 0;
+  font-family: "Montserrat", sans-serif;
+  color: #fafafa;
 }
 
 h1 {
-    margin-top: 2rem;
-    text-align: center;
+  margin-top: 2rem;
+  text-align: center;
 }
 
 .uppercase {
-    text-transform: uppercase;
+  text-transform: uppercase;
 }
 
 body {
-    background-color: #1a1a1a;
+  background-color: #1a1a1a;
 }
 
 section {
-    padding-top: 2rem;
-    width: 90%;
-    text-align: center;
-    margin: auto;
+  padding-top: 2rem;
+  width: 90%;
+  text-align: center;
+  margin: auto;
 }
 
 ul {
-    list-style: none;
-    display: flex;
-    justify-content: center;
-    flex-direction: column;
+  list-style: none;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
 }
 
 .tempMessage {
-    position:absolute;
-    bottom:4%;
-    left:4%;
-    padding: 20px 50px;
-    text-align: center;
-    transition: 0.5s;
+  position: absolute;
+  bottom: 4%;
+  left: 4%;
+  padding: 20px 50px;
+  text-align: center;
+  transition: 0.5s;
 }
 
 .ok {
-    background-color: #00695c;
+  background-color: #00695c;
 }
 
 .error {
-    background-color: #b00020;
+  background-color: #b00020;
 }
 
 .left {
-    text-align: left;
+  text-align: left;
 }
 
 .center {
-    text-align: center;
+  text-align: center;
 }
 
 .inset {
-    padding-left: 1rem;
+  padding-left: 1rem;
 }
 
 .gray {
-    color: lightgray;
+  color: lightgray;
 }
 
 .button {
-    display: inline-block;
-    outline: none;
-    text-decoration: none;
-    text-transform: uppercase;
-    color: #fafafa;
-    padding: 10px 20px;
-    width: 20rem;
-    margin: 10px 2rem;
-    text-align: center;
-    border-radius: 5px;
-    border: 1px solid #a1a1a1;
-    background-color: #1a1a1a;
-    transition: 0.3s;
+  display: inline-block;
+  outline: none;
+  text-decoration: none;
+  text-transform: uppercase;
+  color: #fafafa;
+  padding: 10px 20px;
+  width: 20rem;
+  margin: 10px 2rem;
+  text-align: center;
+  border-radius: 5px;
+  border: 1px solid #a1a1a1;
+  background-color: #1a1a1a;
+  transition: 0.3s;
 }
 
 .button:hover {
-    background-color: #2a2a2a;
-    border: 1px solid #6d6d6d;
-    color: #7E57C2;
-    transition: 0.6s;
+  background-color: #2a2a2a;
+  border: 1px solid #6d6d6d;
+  color: #7e57c2;
+  transition: 0.6s;
 }
 
 .flex {
-    display: flex;
-    align-items: center;
+  display: flex;
+  align-items: center;
 }
 
 /* index */
 
 .menuItem {
-    width: 60%;
-    margin: 10px auto;
+  width: 60%;
+  margin: 10px auto;
 }
 
-
 footer {
-    text-align: right;
-    padding: 3rem;
-    color: #444;
-    font-size: 0.9rem;
+  text-align: right;
+  padding: 3rem;
+  color: #444;
+  font-size: 0.9rem;
 }
 
 /* settings */
 
 label {
-    color: #fafafa;
+  color: #fafafa;
 }
 
 select {
-    width: 100%;
-    padding: 10px 20px;
-    margin: 10px 0;
-    display: inline-block;
-    border-radius: 5px;
+  width: 100%;
+  padding: 10px 20px;
+  margin: 10px 0;
+  display: inline-block;
+  border-radius: 5px;
 }
 
-select, select>* {
-    color: #1a1a1a;
-    font-weight: 600;
+select,
+select > * {
+  color: #1a1a1a;
+  font-weight: 600;
 }
 
 /* game */
 
 .row {
-    flex-direction: row;
+  flex-direction: row;
 }
 
 .cell {
-    background-color: #444;
-    margin: 0.5px;
-    display: block;
-    min-height: 25px;
-    min-width: 25px;
+  background-color: #444;
+  margin: 0.5px;
+  display: block;
+  min-height: 25px;
+  min-width: 25px;
 }
 
 .c01 {
-    min-height: 15px;
-    min-width: 15px;
+  min-height: 15px;
+  min-width: 15px;
 }
 
 .c02 {
-    min-height: 3px;
-    min-width: 3px;
-    max-width: 5px;
-    max-height: 5px;
+  min-height: 3px;
+  min-width: 3px;
+  max-width: 5px;
+  max-height: 5px;
 }
 
 .X {
-    background-color: #FB8C00;
+  background-color: #fb8c00;
 }
 
 .xX {
-    background-color: #FFA726;
+  background-color: #ffa726;
 }
 
 .O {
-    background-color: #4527A0;
+  background-color: #4527a0;
 }
 
 .oO {
-    background-color: #7E57C2;
+  background-color: #7e57c2;
 }
 
 #playerONameResults {
-    color: #4527A0;
+  color: #4527a0;
 }
 
 #playerXNameResults {
-    color: #FB8C00;
+  color: #fb8c00;
 }
 
-
 #field {
-    /* width: 40vw;
+  /* width: 40vw;
     height: 40vw; */
-    /*max-height: 70vh;*/
-    color: #1a1a1a;
+  /*max-height: 70vh;*/
+  color: #1a1a1a;
 }
 
 .fieldWrapper {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    /* height: 100%; */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  /* height: 100%; */
 }
 
 .flexGame {
-    flex-direction: row;
-    justify-content: space-around;
+  flex-direction: row;
+  justify-content: space-around;
 }
 
 .infoAndControls {
-    width: 25vw;
-    /* flex: 1 4 300px; */
-    flex-direction: column;
+  width: 25vw;
+  /* flex: 1 4 300px; */
+  flex-direction: column;
 }
 
 .controlPanel {
-    flex-direction: column;;
+  flex-direction: column;
 }
 
 @media screen and (max-width: 900px) {
-    .flexGame {
-        flex-direction: column;
-    }
+  .flexGame {
+    flex-direction: column;
+  }
 
-    .button {
-        width: 7rem;
-    }
+  .button {
+    width: 7rem;
+  }
 
-    .buttonStep {
-        width: 10rem;
-    }
+  .buttonStep {
+    width: 10rem;
+  }
 
-    .controlPanel {
-        flex-direction: row;
-    }
+  .controlPanel {
+    flex-direction: row;
+  }
 
-    .control {
-        margin-right: 10px;
-        margin-left: 10px;
-    }
+  .control {
+    margin-right: 10px;
+    margin-left: 10px;
+  }
 }
 
 .playerScore {
-    width: 100%;
-    margin: 3px 0;
-    background-color: #444;
+  width: 100%;
+  margin: 3px 0;
+  background-color: #444;
 }
 
 .scoreWrapper {
-    text-align: left;
-    width: 20rem;
+  text-align: left;
+  width: 20rem;
 }
 
-.scoreWrapper>* {
-    box-sizing:border-box;
+.scoreWrapper > * {
+  box-sizing: border-box;
 }
 
 .scoreBar {
-    height: 1rem;
+  height: 1rem;
 }
 
 #playerX {
-    width: 0;
-    height: 1rem;
+  width: 0;
+  height: 1rem;
 }
 
 #playerO {
-    width: 0;
-    height: 1rem;
+  width: 0;
+  height: 1rem;
 }
 
 #sliderWrapper {
-    display: none;
-    margin: 1rem;
+  display: none;
+  margin: 1rem;
 }
 
 .slider {
-    -webkit-appearance: none;
-    outline: none;
-    width: 90%;
-    background: #4527A0;
-    height: 2px;
-    margin: 40px auto 0;
-    opacity: 0.7;
+  -webkit-appearance: none;
+  outline: none;
+  width: 90%;
+  background: #4527a0;
+  height: 2px;
+  margin: 40px auto 0;
+  opacity: 0.7;
 }
 
 .slider:hover {
-    opacity: 1;
+  opacity: 1;
 }
 
 .slider::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    appearance: none;
-    background: #4527A0;
-    cursor: pointer;
-    display: inline-block;
-    width: 30px;
-    height: 30px;
-    border-radius: 50%;
-    transition: 0.5s;
+  -webkit-appearance: none;
+  appearance: none;
+  background: #4527a0;
+  cursor: pointer;
+  display: inline-block;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  transition: 0.5s;
 }
 
 /*.slider::-webkit-slider-thumb:hover {*/
@@ -313,59 +311,59 @@ select, select>* {
 /* winner alert */
 
 #dimmer {
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 100vw;
-    height: 100vw;
-    background-color: rgba(0,0,0,0.4);
-    display: none
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100vw;
+  height: 100vw;
+  background-color: rgba(0, 0, 0, 0.4);
+  display: none;
 }
 
 #results {
-    position: absolute;
-    width: 20rem;
-    top: 40%;
-    left: 50%;
-    margin-left: -10rem;
-    padding: 2rem 2rem 3rem;
-    border: 1px solid #444;
-    border-radius: 7px;
-    background-color: #2a2a2a;
-    display: none
+  position: absolute;
+  width: 20rem;
+  top: 40%;
+  left: 50%;
+  margin-left: -10rem;
+  padding: 2rem 2rem 3rem;
+  border: 1px solid #444;
+  border-radius: 7px;
+  background-color: #2a2a2a;
+  display: none;
 }
 
 #results > * span {
-    font-size: 1.3rem;
-    padding: 0 5px;
-    font-weight: bold;
+  font-size: 1.3rem;
+  padding: 0 5px;
+  font-weight: bold;
 }
 
 h3 {
-    text-transform: uppercase;
+  text-transform: uppercase;
 }
 
 #winner {
-    text-transform: uppercase;
+  text-transform: uppercase;
 }
 
 /* about */
 
 h2 {
-    margin: 1rem 0;
+  margin: 1rem 0;
 }
 
 .icon {
-    width: 70px;
-    height: 70px;
-    opacity: 80%;
-    padding: 0.5rem;
+  width: 70px;
+  height: 70px;
+  opacity: 80%;
+  padding: 0.5rem;
 }
 
 .icon:hover {
-    opacity: 100%;
+  opacity: 100%;
 }
 
 .socketName {
-    display: none;
+  display: none;
 }

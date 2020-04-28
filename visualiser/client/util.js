@@ -33,33 +33,33 @@ const tempAlert = (data,duration) => {
     document.body.appendChild(el);
 };
 
-const getField = (map) => {
-    let cellTemplate = '<li class="cell c00 dot"></li>';
-    const rowTemplate = '<ul class="row">data</ul>';
-    const wrapper = '<div class="fieldWrapper">data</div>';
-
-    if (map.length > 20 && map.length < 50) {
-        cellTemplate = cellTemplate.replace('c00', 'c01');
-    } else if (map.length > 49) {
-        cellTemplate = cellTemplate.replace('c00', 'c02');
-    } 
-    let outputmap = map.map(row => {
-        let data = row.split('')
-                .map(symbol => {
-                        if (symbol === '.') {
-                            return cellTemplate;
-                        } else if (symbol === 'x') {
-                            return cellTemplate.replace('dot', 'xX');
-                        } else if (symbol === 'o') {
-                            return cellTemplate.replace('dot', 'oO');
-                        } else
-                            return cellTemplate.replace('dot', symbol);
-                })
-                .join('');
-        return rowTemplate.replace('data', data);
-    }).join('');
-    return wrapper.replace('data', outputmap);
-};
+// const getField = (map) => {
+//     let cellTemplate = '<li class="cell c00 dot"></li>';
+//     const rowTemplate = '<ul class="row">data</ul>';
+//     const wrapper = '<div class="fieldWrapper">data</div>';
+//
+//     if (map.length > 20 && map.length < 50) {
+//         cellTemplate = cellTemplate.replace('c00', 'c01');
+//     } else if (map.length > 49) {
+//         cellTemplate = cellTemplate.replace('c00', 'c02');
+//     }
+//     let outputmap = map.map(row => {
+//         let data = row.split('')
+//                 .map(symbol => {
+//                         if (symbol === '.') {
+//                             return cellTemplate;
+//                         } else if (symbol === 'x') {
+//                             return cellTemplate.replace('dot', 'xX');
+//                         } else if (symbol === 'o') {
+//                             return cellTemplate.replace('dot', 'oO');
+//                         } else
+//                             return cellTemplate.replace('dot', symbol);
+//                 })
+//                 .join('');
+//         return rowTemplate.replace('data', data);
+//     }).join('');
+//     return wrapper.replace('data', outputmap);
+// };
 
 const $ = (elementName) => {
     return document.querySelector(elementName);

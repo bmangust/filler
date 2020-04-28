@@ -1,206 +1,318 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="./style.css" rel="stylesheet">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="./style.css" rel="stylesheet" />
     <script src="./util.js" type="text/javascript"></script>
     <script src="/socket.io/socket.io.js"></script>
     <title>Filler game</title>
-</head>
-<body>
+  </head>
+  <body>
     <h1>Welcome to <span class="uppercase">Filler championship</span></h1>
     <section>
-        <div class="flex flexGame">
-            <div id="field">{field}</div>
-            <div class="infoAndControls flex">
-                <div class="score">
-                    <div class="scoreWrapper">
-                        <span id="playerOname">Player 1</span>
-                        <div class="playerScore">
-                            <div class="scoreBar O" id="playerO"></div>
-                        </div>
-                    </div>
-                    <div class="scoreWrapper">
-                        <span id="playerXname">Player 2</span>
-                        <div class="playerScore">
-                            <div class="scoreBar X" id="playerX"></div>
-                        </div>
-                    </div>
-                </div>
-                <div class="flex controlPanel">
-                    <input class="button control" type="button" id="start" value="Start" />
-                    <input class="button control" type="button" id="pause" value="Pause" />
-                    <input class="button control" type="button" id="reset" value="Reset" />
-                    <input class="button control buttonStep" type="button" id="stepForward" value="Step forward" />
-                    <input class="button control buttonStep" type="button" id="stepBackward" value="Step backward" />
-                </div>
+      <div class="flex flexGame">
+        <div id="field">{field}</div>
+        <div class="infoAndControls flex">
+          <div class="score">
+            <div class="scoreWrapper">
+              <span id="playerOname">Player 1</span>
+              <div class="playerScore">
+                <div class="scoreBar O" id="playerO"></div>
+              </div>
             </div>
-        </div>
-        <div id="sliderWrapper">
-            <h3 class="uppercase">History slider</h3>
-            <input type="range" min="0" max="100" value="50" class="slider" id="slider">
-        </div>
-        <div id="dimmer"></div>
-        <div id="results">
-            <div class="playerWrapper">
-                <h3>winner</h3>
-                <h2 id="winner">player1</h2>
+            <div class="scoreWrapper">
+              <span id="playerXname">Player 2</span>
+              <div class="playerScore">
+                <div class="scoreBar X" id="playerX"></div>
+              </div>
             </div>
-            <div>
-                <span id="playerONameResults">player1</span>
-                <span id="playerOScore">214</span>
-                <span>:</span>
-                <span id="playerXScore">121</span>
-                <span id="playerXNameResults">player2</span>
-            </div>
+          </div>
+          <div class="flex controlPanel">
+            <input
+              class="button control"
+              type="button"
+              id="start"
+              value="Start"
+            />
+            <input
+              class="button control"
+              type="button"
+              id="pause"
+              value="Pause"
+            />
+            <input
+              class="button control"
+              type="button"
+              id="reset"
+              value="Reset"
+            />
+            <input
+              class="button control buttonStep"
+              type="button"
+              id="stepForward"
+              value="Step forward"
+            />
+            <input
+              class="button control buttonStep"
+              type="button"
+              id="stepBackward"
+              value="Step backward"
+            />
+          </div>
         </div>
-        <br/>
+      </div>
+      <div id="sliderWrapper">
+        <h3 class="uppercase">History slider</h3>
+        <input
+          type="range"
+          min="0"
+          max="100"
+          value="50"
+          class="slider"
+          id="slider"
+        />
+      </div>
+      <div id="dimmer"></div>
+      <div id="results">
+        <div class="playerWrapper">
+          <h3>winner</h3>
+          <h2 id="winner">player1</h2>
+        </div>
         <div>
-            <a class="button" href="http://localhost:3000">back</a>
+          <span id="playerONameResults">player1</span>
+          <span id="playerOScore">214</span>
+          <span>:</span>
+          <span id="playerXScore">121</span>
+          <span id="playerXNameResults">player2</span>
         </div>
+      </div>
+      <br />
+      <div>
+        <a class="button" href="http://localhost:3000">back</a>
+      </div>
+      <div id="react"></div>
     </section>
     <footer>
-        <span>Handcrafted by akraig</span>
+      <span>Handcrafted by akraig</span>
     </footer>
-    <script>
-        let timerID;
-        const socket = io();
-        let delay = 33;
-        let counter = 0;
-        let slider = null;
-        let state = 'reset';
+    <script
+      src="https://unpkg.com/react@16.13.1/umd/react.development.js"
+      crossorigin
+    ></script>
+    <script
+      src="https://unpkg.com/react-dom@16.13.1/umd/react-dom.development.js"
+      crossorigin
+    ></script>
+    <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+    <!-- <script src="../react/index.js"></script> -->
+    <!-- <script type="text/babel">
+      import React from "react";
 
-        const updateField = (map) => {
-            $('#field').innerHTML = getField(map);
-        };
-        
-        const updateScore = (score) => {
-            let maxLength = score[0];
-            let player1width = score[1] * 100 / maxLength;
-            let player2width = score[2] * 100 / maxLength;
-            $('#playerO').style.width = `${player1width}%`;
-            $('#playerX').style.width = `${player2width}%`;
-        };
-
-        const updatePlayers = (players) => {
-            if (players.length === 2) {
-                $('#playerOname').innerHTML = players[0];
-                $('#playerXname').innerHTML = players[1];
-            }
-        };
-
-        const sendState = (stateString) => {
-            state = stateString;
-            socket.emit('state', stateString);
-        };
-
-        const getState = (socket) => {
-            socket.emit('getState', null);
-        };
-
-        const start = () => {
-            if (!timerID) {
-                if (state === 'load' || state === 'reset' || state === 'endgame') {
-                    hideSliderAndScore();
-                    sendState('start');
-                }
-                timerID = setInterval(() => {
-                    getState(socket);
-                    counter++;
-                }, delay);
-            }
-        };
-
-        const pause = () => {
-            clearInterval(timerID);
-            timerID = null;
-        };
-
-        const reset = () => {
-            hideSliderAndScore();
-            clearInterval(timerID);
-            timerID = null;
-            sendState('reset');
-            counter = 0;
-        };
-
-        const stepForward = () => {
-            clearInterval(timerID);
-            timerID = null;
-            sendState('stepForward');
-            counter++;
-        };
-
-        const stepBackward = () => {
-            clearInterval(timerID);
-            timerID = null;
-            sendState('stepBackward');
-            counter--;
-        };
-
-        const hideSliderAndScore = () => {
-            $('#sliderWrapper').style.display = 'none';
-            const results = $('#results').style;
-            results.display = 'none';
-            results.left = '50%';
-            results.margin = '-10rem';
-            results.position = 'absolute';
-        };
-
-        const showSlider = (max) => {
-            $('#sliderWrapper').style.display = 'block';
-            slider = $("#slider");
-            slider.max = max;
-            slider.value = max;
-            slider.oninput = function() {
-                socket.emit('getHistory', this.value);
-            };
-        };
-
-        socket.on('update', data => {
-            log(data);
-            log(`current iteration: ${counter}`);
-            updateField(data.map);
-            updatePlayers(data.players);
-            updateScore(data.score);
-        });
-
-        const showScore = (data) => {
-            const winner = data.finalScore;
-            $('#dimmer').style.display = 'block';
-            $('#results').style.display = 'block';
-            $('#winner').innerHTML = winner.winner;
-            $('#playerONameResults').innerHTML = winner.players[0];
-            $('#playerXNameResults').innerHTML = winner.players[1];
-            $('#playerOScore').innerHTML = data.score[1];
-            $('#playerXScore').innerHTML = data.score[2];
-            setTimeout(() => {
-                $('#dimmer').style.display = 'none';
-                const results = $('#results').style;
-                results.position = 'relative';
-                results.left = '0';
-                results.margin = '10px auto';
-                showSlider(data.historyLength);
-            }, 2000);
+      const Cell = (props) => {
+        let classes = ["cell", `${props.mapSize}`];
+        if (props.letter === ".") {
+          classes.push("dot");
+        } else if (props.letter === "x") {
+          classes.push("xX");
+        } else if (props.letter === "o") {
+          classes.push("oO");
+        } else {
+          classes.push(props.letter);
         }
+        return <li className={classes.join(" ")}></li>;
+      };
 
-        socket.on('endgame', data => {
-            clearInterval(timerID);
-            timerID = null;
-            state = 'endgame';
-            updateField(data.map);
-            updatePlayers(data.players);
-            updateScore(data.score);
-            showScore(data);
+      const Row = (props) => {
+        return (
+          <ul>
+            {props.row.map((letter, index) => {
+              return (
+                <Cell
+                  letter={letter}
+                  mapSize={props.mapSize}
+                  key={`${props.rowIndex}${index}`}
+                ></Cell>
+              );
+            })}
+          </ul>
+        );
+      };
+
+      const Field = (props) => {
+        let mapSize = "c00";
+        if (props.field.length > 20 && props.field.length < 50) {
+          mapSize = "c01";
+        } else if (props.field.length > 49) {
+          mapSize = "c02";
+        }
+        const data = props.field.map((row, index) => {
+          return (
+            <Row key={index} rowIndex={index} mapSize={mapSize} row={row}></Row>
+          );
         });
+        return <div class="fieldWrapper">data</div>;
+      };
 
-        sendState('load');
-        $('#start').onclick = start;
-        $('#pause').onclick = pause;
-        $('#reset').onclick = reset;
-        $('#stepForward').onclick = stepForward;
-        $('#stepBackward').onclick = stepBackward;
+      const updateField = (map) => {
+        ReactDOM.render(<Field field={map} />, $("#react"));
+      };
+    </script> -->
+
+    <script src="game.js">
+      //   let timerID;
+      //   const socket = io();
+      //   let delay = 33;
+      //   let counter = 0;
+      //   let maximum = 0;
+      //   let slider = null;
+      //   let state = "reset";
+      //   import updateField from "../react/index.js";
+      //   log(updateField);
+      //   //   import React from "react";
+      //   //   import Field from "../react/Field";
+
+      //   //   const updateField = (map) => {
+      //   //     ReactDOM.render(<Field field={map} />, $("#react"));
+      //   //     // $('#field').innerHTML = getField(map);
+      //   //     // $('#field').innerHTML = map;
+      //   //   };
+
+      //   const updateScore = (score) => {
+      //     let maxLength = score[0];
+      //     let player1width = (score[1] * 100) / maxLength;
+      //     let player2width = (score[2] * 100) / maxLength;
+      //     $("#playerO").style.width = `${player1width}%`;
+      //     $("#playerX").style.width = `${player2width}%`;
+      //   };
+
+      //   const updatePlayers = (players) => {
+      //     if (players.length === 2) {
+      //       $("#playerOname").innerHTML = players[0];
+      //       $("#playerXname").innerHTML = players[1];
+      //     }
+      //   };
+
+      //   const sendState = (stateString) => {
+      //     state = stateString;
+      //     socket.emit("state", stateString);
+      //   };
+
+      //   const getState = (socket) => {
+      //     socket.emit("getState", null);
+      //   };
+
+      //   const start = () => {
+      //     if (!timerID) {
+      //       if (state === "load" || state === "reset" || state === "endgame") {
+      //         hideSliderAndScore();
+      //         sendState("start");
+      //       }
+      //       timerID = setInterval(() => {
+      //         getState(socket);
+      //       }, delay);
+      //     }
+      //   };
+
+      //   const pause = () => {
+      //     clearInterval(timerID);
+      //     timerID = null;
+      //   };
+
+      //   const reset = () => {
+      //     hideSliderAndScore();
+      //     clearInterval(timerID);
+      //     timerID = null;
+      //     sendState("reset");
+      //     counter = 0;
+      //   };
+
+      //   const stepForward = () => {
+      //     clearInterval(timerID);
+      //     timerID = null;
+      //     sendState("stepForward");
+      //     counter++;
+      //     if (counter > maximum) {
+      //       counter = maximum;
+      //     }
+      //     $("#slider").value = counter;
+      //   };
+
+      //   const stepBackward = () => {
+      //     clearInterval(timerID);
+      //     timerID = null;
+      //     sendState("stepBackward");
+      //     counter--;
+      //     log(`slider: ${$("#slider").value}, counter: ${counter}`);
+      //     $("#slider").value = counter;
+      //   };
+
+      //   const hideSliderAndScore = () => {
+      //     $("#sliderWrapper").style.display = "none";
+      //     const results = $("#results").style;
+      //     results.display = "none";
+      //     results.left = "50%";
+      //     results.margin = "-10rem";
+      //     results.position = "absolute";
+      //   };
+
+      //   const showSlider = (max) => {
+      //     $("#sliderWrapper").style.display = "block";
+      //     slider = $("#slider");
+      //     slider.max = max;
+      //     slider.value = max;
+      //     slider.oninput = function () {
+      //       socket.emit("getHistory", this.value);
+      //       counter = this.value;
+      //     };
+      //   };
+
+      //   socket.on("update", (data) => {
+      //     log(data);
+      //     log(`current iteration: ${counter}`);
+      //     updateField(data.map);
+      //     updatePlayers(data.players);
+      //     updateScore(data.score);
+      //     // counter++;
+      //   });
+
+      //   const showScore = (data) => {
+      //     const winner = data.finalScore;
+      //     $("#dimmer").style.display = "block";
+      //     $("#results").style.display = "block";
+      //     $("#winner").innerHTML = winner.winner;
+      //     $("#playerONameResults").innerHTML = winner.players[0];
+      //     $("#playerXNameResults").innerHTML = winner.players[1];
+      //     $("#playerOScore").innerHTML = data.score[1];
+      //     $("#playerXScore").innerHTML = data.score[2];
+      //     setTimeout(() => {
+      //       $("#dimmer").style.display = "none";
+      //       const results = $("#results").style;
+      //       results.position = "relative";
+      //       results.left = "0";
+      //       results.margin = "10px auto";
+      //       showSlider(data.historyLength);
+      //     }, 2000);
+      //   };
+
+      //   socket.on("endgame", (data) => {
+      //     clearInterval(timerID);
+      //     timerID = null;
+      //     state = "endgame";
+      //     maximum = data.historyLength;
+      //     counter = maximum;
+      //     updateField(data.map);
+      //     updatePlayers(data.players);
+      //     updateScore(data.score);
+      //     showScore(data);
+      //   });
+
+      //   sendState("load");
+      //   $("#start").onclick = start;
+      //   $("#pause").onclick = pause;
+      //   $("#reset").onclick = reset;
+      //   $("#stepForward").onclick = stepForward;
+      //   $("#stepBackward").onclick = stepBackward;
     </script>
-</body>
+  </body>
 </html>

@@ -4,6 +4,14 @@
   "dependencies": {
     "body-parser": "^1.19.0",
     "express": "^4.16.4",
-    "socket.io": "^2.3.0"
+    "socket.io": "^2.3.0",
+    "terser": "^4.6.11"
+  },
+  "scripts": {
+    "start": "node app.js",
+    "packUtil": "npx terser -c -m -o util.min.js -- util.js",
+    "packClientUtil": "npx terser -c -m -o client/util.min.js -- client/util.js",
+    "packGame": "npx terser -c -m -o client/game.min.js -- client/game.js",
+    "pack": "npm run packUtil && npm run packClientUtil && npm run packGame"
   }
 }

@@ -1,0 +1,35 @@
+.Cell {
+  background-color: #444;
+  margin: 0.5px;
+  display: block;
+  min-height: 25px;
+  min-width: 25px;
+}
+
+.c01 {
+  min-height: 15px;
+  min-width: 15px;
+}
+
+.c02 {
+  min-height: 3px;
+  min-width: 3px;
+  max-width: 5px;
+  max-height: 5px;
+}
+
+.X {
+  background-color: #fb8c00;
+}
+
+.xX {
+  background-color: #ffa726;
+}
+
+.O {
+  background-color: #4527a0;
+}
+
+.oO {
+  background-color: #7e57c2;
+}
