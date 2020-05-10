@@ -1,0 +1,23 @@
+select {
+  width: 100%;
+  padding: 10px 20px;
+  margin: 10px 0;
+  display: inline-block;
+  border-radius: 5px;
+}
+
+select:focus {
+  outline: none;
+}
+
+select,
+select > * {
+  color: #1a1a1a;
+  font-weight: 600;
+  padding: 10px 1rem;
+  font-family: "Quicksand", "Roboto", "Open Sans", "Helvetica Neue", sans-serif;
+}
+
+option:active {
+  background-color: #bbb;
+}

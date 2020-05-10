@@ -1,0 +1,44 @@
+.ScoreBar {
+  display: flex;
+  flex-direction: column;
+}
+
+@media screen and (max-width: 900px) {
+  .ScoreBar {
+    padding: 0 10px;
+    padding-top: 5px;
+    flex-direction: row;
+  }
+
+  .playerName {
+    width: 5rem;
+    padding: 0 20px;
+  }
+}
+
+.bar {
+  height: 1rem;
+}
+
+.X {
+  background-color: #fb8c00;
+}
+
+.O {
+  background-color: #4527a0;
+}
+/* #playerX {
+  width: 0;
+  height: 1rem;
+}
+
+#playerO {
+  width: 0;
+  height: 1rem;
+} */
+
+.playerScore {
+  width: 100%;
+  margin: 3px 0;
+  background-color: #444;
+}

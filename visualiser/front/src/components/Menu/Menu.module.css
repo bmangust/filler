@@ -1,8 +1,36 @@
 .infoAndControls {
-  width: 25vw;
+  display: flex;
   flex-direction: column;
 }
 
-.controlPanel {
+.buttonWrapper {
+  display: flex;
   flex-direction: column;
+}
+
+@media screen and (max-width: 900px) {
+  .buttonWrapper {
+    flex-direction: row;
+    justify-content: space-evenly;
+    width: 100%;
+  }
+
+  /* .infoAndControls {
+    flex-direction: row;
+  } */
+
+  .stepButton {
+    width: 12rem;
+  }
+
+  button {
+    display: inline-block;
+    width: 7rem;
+    margin: 0.5rem;
+  }
+
+  .control {
+    margin-right: 10px;
+    margin-left: 10px;
+  }
 }

@@ -1,0 +1,8 @@
+.scoreWrapper {
+  text-align: left;
+  width: 20rem;
+}
+
+.scoreWrapper > * {
+  box-sizing: border-box;
+}

@@ -8,21 +8,4 @@
   .flexGame {
     flex-direction: column;
   }
-
-  button {
-    width: 7rem;
-  }
-
-  .buttonStep {
-    width: 10rem;
-  }
-
-  .controlPanel {
-    flex-direction: row;
-  }
-
-  .control {
-    margin-right: 10px;
-    margin-left: 10px;
-  }
 }
