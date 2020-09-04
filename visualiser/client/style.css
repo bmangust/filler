@@ -213,6 +213,10 @@ select, select>* {
     flex-direction: column;;
 }
 
+.buttonSpeed {
+    width: auto;
+}
+
 @media screen and (max-width: 900px) {
     .flexGame {
         flex-direction: column;

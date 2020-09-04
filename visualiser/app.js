@@ -27,12 +27,12 @@ const fillervm = () => {
     const filler = spawn(`${resourcepath}/filler_vm`, [`-f`, `${resourcepath}/maps/${settings.map}`, `-p1`, `${resourcepath}/players/${settings.players[0]}.filler`, `-p2`, `${resourcepath}/players/${settings.players[1]}.filler`, `*>&1`]);
 
     filler.stdout.on('data', chunk => {
-        // log(chunk.toString());
+       log(chunk.toString());
         game.processInput(chunk.toString());
     });
 
     filler.stderr.on('data', chunk => {
-        log(`stderr: ${chunk.toString()}`);
+ //       log(`stderr: ${chunk.toString()}`);
     });
 
     filler.on('close', (code) => {

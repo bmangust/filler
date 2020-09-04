@@ -14,6 +14,7 @@ module.exports = class Game {
     scores;         //score from field count
     fillerScore;    //score from vm output
     isFinished;
+    brokenRow;
 
     constructor (settings) {
         this.width = 0;
@@ -28,6 +29,7 @@ module.exports = class Game {
         this.mapSize = settings.map;
         this.scores = [0, 0, 0];		//[max, p1, p2]
         this.fillerScore = [0,0];
+        this.brokenRow = null;
         this._initMap();
     }
 
@@ -97,6 +99,15 @@ module.exports = class Game {
             let row = input.split(' ')[1];
             if (row && row.length === this.width) {
                 this.map.push(row);
+                this.brokenRow = null;
+            } else if (input.match(/\.|o|x/ig)) {
+                if (row) {
+                    this.brokenRow = row.slice(0);
+                } else {
+                    this.brokenRow = this.brokenRow === null ? input : this.brokenRow + input;
+                    this.map.push(this.brokenRow);
+                    this.brokenRow === null
+                }
             }
         } else {
             this.state = 'idle';
