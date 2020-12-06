@@ -28,6 +28,6 @@ run **make** command in termainal and follow instructions
 
 ### How it looks:
 
-![screen1](/img/screen01.png)
-![screen2](/img/screen02.png)
+![screen1](/img/screen_01.png)
+![screen2](/img/screen_02.png)
 
