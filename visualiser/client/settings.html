@@ -18,24 +18,24 @@
                 <option value="abanlin">abanlin</option>
                 <option value="akraig" selected>akraig</option>
                 <option value="carli">carli</option>
+                <option value="cnails">cnails</option>
                 <option value="champely">champely</option>
                 <option value="grati">grati</option>
                 <option value="hcao">hcao</option>
                 <option value="lcharvol">lcharvol</option>
                 <option value="superjeannot">superjeannot</option>
-                <option value="zweng">zweng</option>
             </select><br><br>
             <label class="uppercase">Player 2</label><br>
             <select type="text" name="player2">
                 <option value="abanlin">abanlin</option>
                 <option value="akraig">akraig</option>
                 <option value="carli">carli</option>
+                <option value="cnails">cnails</option>
                 <option value="champely">champely</option>
                 <option value="grati">grati</option>
                 <option value="hcao">hcao</option>
                 <option value="lcharvol" selected>lcharvol</option>
                 <option value="superjeannot">superjeannot</option>
-                <option value="zweng">zweng</option>
             </select><br><br>
             <label class="uppercase">Map size</label><br>
             <select type="text" name="map">
@@ -70,40 +70,15 @@
                    tempAlert(response, 2000);
                    setTimeout(() => {
                        window.location.replace('http://localhost:3000');
-                   }, 2000);
+                   }, 1000);
                } else {
-                   log(response.message);
+                //    log(response.message);
                    tempAlert(response, 2000);
                }
             });
         };
 
         $("#submit").onclick = sendSettings;
-
-        // document.getElementById("submit").addEventListener("click", e => {
-        //     e.preventDefault();
-        //     let settings = document.forms["settings"];
-        //     let players = [];
-        //     players.push(settings.elements["player1"].value);
-        //     players.push(settings.elements["player2"].value);
-        //     let map = settings.elements["map"].value;
-        //     let data = JSON.stringify({players: players, map: map});
-        //     log(data);
-        //     postSettings(data, "/settings")
-        //         .then(ok => {
-        //             log(`promise resolve: ${ok.response}`);
-        //             tempAlert(ok.response, 2000);
-        //         })
-        //         .then(
-        //             setTimeout(() => {
-        //                 window.location.replace('http://localhost:3000');
-        //             }, 2000)
-        //         )
-        //         .catch(error => {
-        //             log(`promise reject: ${error.response}`);
-        //             tempAlert(error.response, 2000);
-        //         })
-        // });
     </script>
 </body>
 </html>

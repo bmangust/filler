@@ -13,28 +13,20 @@ let settings = { players: ["akraig", "akraig"], map: "map00" };
 const { spawn } = require("child_process");
 
 const fillervm = () => {
-  const filler = spawn(`${resourcepath}/filler_vm`, [
-    `-f`,
-    `${resourcepath}/maps/${settings.map}`,
-    `-p1`,
-    `${resourcepath}/players/${settings.players[0]}.filler`,
-    `-p2`,
-    `${resourcepath}/players/${settings.players[1]}.filler`,
-    `*>&1`,
-  ]);
+    const filler = spawn(`${resourcepath}/filler_vm`, [`-f`, `${resourcepath}/maps/${settings.map}`, `-p1`, `${resourcepath}/players/${settings.players[0]}.filler`, `-p2`, `${resourcepath}/players/${settings.players[1]}.filler`, `*>&1`]);
 
-  filler.stdout.on("data", (chunk) => {
-    // log(chunk.toString());
-    game.processInput(chunk.toString());
-  });
+    filler.stdout.on('data', chunk => {
+       log(chunk.toString());
+        game.processInput(chunk.toString());
+    });
 
-  filler.stderr.on("data", (chunk) => {
-    log(`stderr: ${chunk.toString()}`);
-  });
+    filler.stderr.on('data', chunk => {
+ //       log(`stderr: ${chunk.toString()}`);
+    });
 
-  filler.on("close", (code) => {
-    console.log(`child process exited with code ${code}`);
-  });
+    filler.on('close', (code) => {
+        console.log(`child process exited with code ${code}`);
+    });
 };
 
 const path = `${__dirname}/client`;
@@ -61,8 +53,6 @@ app.get("/", function (request, response) {
  * game module reads all the input and stores it in his history
  * this module gets history states one by one in settled interval and displays them.
  * also, gets and displays scores
- *
- * maybe it is possible to do a slider to move in history
  */
 
 app.get("/game", function (request, response) {
